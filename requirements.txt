@@ -1,0 +1,14 @@
+pandas==1.5.1
+tqdm==4.*
+xmltodict==0.13.0
+pyspark==3.3.0
+ipykernel==6.16.1
+flake8==5.0.4
+black==22.10.0
+seaborn==0.12.1
+datasets==2.6.1
+wordcloud==1.8.2.2
+pydantic==1.10.4
+pubmed-parser==0.3.1
+geopandas==0.12.2
+country-converter==1.0.0
