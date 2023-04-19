@@ -1,43 +1,44 @@
-############ Infrastructure arguments for debugging ############
-max_train_samples: 1000 # For debugging purposes
-max_eval_samples: 1000 # For debugging purposes
+############ Debugging arguments ############
+max_train_samples: 1000 # For debugging purposes, comment for final run
+max_eval_samples: 100 # For debugging purposes, comment for final run
 overwrite_output_dir: True # Set to False after development is finished
-############ All HF arguments ############
+overwrite_cache: False
+seed: 42
+
+############ Data and model ############
 dataset_name: FAERS-PubMed/BioDEX-ICSR
-output_dir: ../../checkpoints/
 text_column: abstract
 summary_column: target
-generation_num_beams: 5
-# repetition_penalty: 1.2
+model_name_or_path: google/flan-t5-small
+output_dir: ../../checkpoints/flan-t5-small-BioDEX-ICSR
 max_source_length: 512
 max_target_length: 128
 # pad_to_max_length: True
-overwrite_cache: False
-model_name_or_path: google/flan-t5-small
+do_train: True
+do_eval: True
+do_predict: True
+
+############ Training parameters ############
+repetition_penalty: 1.2
 # lr_scheduler_type: linear
 learning_rate: 0.001
 optim: adafactor
-do_train: False
-do_eval: True
-# do_predict: True
-do_predict: False
-predict_with_generate: True
-dataloader_num_workers: 0
-# report_to: wandb
-# cache_dir: './cache'
-per_device_train_batch_size: 8
-per_device_eval_batch_size: 4
+per_device_train_batch_size: 32
+per_device_eval_batch_size: 64
 gradient_accumulation_steps: 1
 num_train_epochs: 5.0
-# max_steps: 3000
-# max_steps: 2000
-# evaluation_strategy: epoch
+
+############ Generation parameters ############
+predict_with_generate: True
+generation_num_beams: 5
+
+############# Saving and logging ############
 evaluation_strategy: steps
-eval_steps: 200 # keep it low to see the curve in the beginning
-# eval_steps: 2000
 logging_strategy: steps
-logging_steps: 100
 save_strategy: steps
+eval_steps: 20 # keep it low to see the curve in the beginning
+logging_steps: 20
 save_steps: 1000
 save_total_limit: 2
-seed: 42
+report_to: wandb
+# cache_dir: './cache'

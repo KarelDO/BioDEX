@@ -16,4 +16,4 @@ The code to produce the raw resource will be released soon.
 
 ## Tasks
 
-Code to train and evaluate on the ICSR-Extraction task is located in `tasks/icsr_extraction`.
+Code to train and evaluate on the ICSR-Extraction task is located in `tasks/icsr_extraction`. Further directions can be found in the relevant folder.

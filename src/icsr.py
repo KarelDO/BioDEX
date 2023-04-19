@@ -5,8 +5,11 @@ from .report import Report
 
 import re
 
-string_re = re.compile(
+string_re_with_newline = re.compile(
     r"serious: (.*)\npatientsex: (.*)\ndrugs: (.*)\nreactions: (.*)\n"
+)
+string_re_without_newline = re.compile(
+    r"serious: (.*) patientsex: (.*) drugs: (.*) reactions:[ ]?(.*)"
 )
 
 
@@ -64,7 +67,10 @@ class Icsr(BaseModel):
 
     @classmethod
     def from_string(cls, string: str):
-        match = string_re.match(string)
+        match = string_re_without_newline.match(string)
+        if not match:
+            match = string_re_with_newline.match(string)
+
         if match:
             serious = match.group(1)
             patientsex = match.group(2)

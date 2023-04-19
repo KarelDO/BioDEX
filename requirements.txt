@@ -18,3 +18,4 @@ nltk==3.8.1
 torch==2.0.0
 absl-py==1.4.0
 rouge_score==0.1.2
+wandb==0.14.2

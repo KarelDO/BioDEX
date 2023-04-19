@@ -118,6 +118,10 @@ class ModelArguments:
             )
         },
     )
+    repetition_penalty: Optional[float] = field(
+        default=1.0,
+        metadata={"help": {"Repetition penalty to use during beam search decoding."}},
+    )
 
 
 @dataclass
@@ -436,6 +440,16 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
     )
 
+    # Set generation parameters for prediction
+    force_words = ["serious:", "patientsex:", "drugs:", "reactions:"]
+    force_words_ids = [tokenizer.encode(word)[:-1] for word in force_words]  # skip eos
+    gen_kwargs = {
+        "force_words_ids": force_words_ids,
+        "repetition_penalty": model_args.repetition_penalty,
+    }
+    logger.info(f"repetition_penalty: {model_args.repetition_penalty}")
+    logger.info(f"force words: {force_words}")
+
     # We resize the embeddings only when necessary to avoid index errors. If you are creating a model from scratch
     # on a small vocab and want a smaller embedding size, remove this test.
     embedding_size = model.get_input_embeddings().weight.shape[0]
@@ -703,7 +717,7 @@ def main():
     if training_args.do_predict:
         logger.info("*** Predict ***")
 
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict")
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", **gen_kwargs)
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
