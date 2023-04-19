@@ -1,5 +1,6 @@
 checkpoints/
-.lock/
+**/.lock/
+**/.lock
 wandb/
 
 # Byte-compiled / optimized / DLL files
