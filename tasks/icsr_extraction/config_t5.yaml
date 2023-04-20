@@ -19,7 +19,6 @@ do_eval: True
 do_predict: True
 
 ############ Training parameters ############
-repetition_penalty: 1.2
 # lr_scheduler_type: linear
 learning_rate: 0.001
 optim: adafactor
@@ -31,6 +30,7 @@ num_train_epochs: 5.0
 ############ Generation parameters ############
 predict_with_generate: True
 generation_num_beams: 5
+repetition_penalty: 1.2
 
 ############# Saving and logging ############
 evaluation_strategy: steps

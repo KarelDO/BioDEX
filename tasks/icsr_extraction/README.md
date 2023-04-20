@@ -5,13 +5,13 @@ We will support decoder-only models (`GPT` etc.) soon.
 The training arguments are saved in `config.yaml` but can be passed via the command line using `python ../config_to_cmd.py config.yaml`.
 Don't forget the backticks as they are crucial to first parse the config file.
         
-        python run_summarization_for_icsr_extraction.py `python ../config_to_cmd.py config.yaml`
+        python run_encdec_for_icsr_extraction.py `python ../config_to_cmd.py config_t5.yaml`
 
 For prediction, we use a beam search with `num_beams = 5` and a repetition penalty. Additionally, we force the model to adhere to the structure of an ICSR by setting `force_words = ["serious:", "patientsex:", "drugs:", "reactions:"]`. If you change the structure of the ICSR string, be sure to reflect these changes by changing `force_words`.
 
 ## Finetune decoder-only models (e.g. GPT2)
 
-        python gpt2/finetune_for_summarization.py `python ../config_to_cmd.py config_gpt.yaml`
+        python run_decoder_for_icsr_extraction.py `python ../config_to_cmd.py config_gpt2.yaml`
 
 
 ## Evaluate
