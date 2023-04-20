@@ -12,12 +12,13 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [
-                "--output_dir", "./checkpoints/gpt2-ICSR-Extraction" 
+                "--output_dir", "./checkpoints/gpt2-BioDEX-ICSR" 
                 ,"--model_name_or_path", "gpt2"
                 ,"--dataset_name", "FAERS-PubMed/BioDEX-ICSR"
                 ,"--tokenizer_name", "gpt2"
-                ,"--per_device_train_batch_size", "1" 
-                ,"--per_device_eval_batch_size", "1" 
+                ,"--per_device_train_batch_size", "2" 
+                ,"--per_device_eval_batch_size", "2" 
+                ,"--per_device_predict_batch_size", "8" 
                 ,"--save_strategy", "no" 
                 ,"--do_train"
                 ,"--do_eval"
@@ -32,12 +33,17 @@
                 ,"--weight_decay", "0.0" 
                 ,"--seed", "7" 
                 ,"--evaluation_strategy", "steps" 
-                ,"--eval_steps", "200" 
-                ,"--bf16"
+                ,"--eval_steps", "20" 
+                // ,"--bf16"
                 ,"--num_train_epochs", "1" 
-                ,"--logging_steps", "100" 
+                ,"--logging_steps", "10" 
                 ,"--logging_first_step"
-                ]
+                ,"--max_train_samples", "100"
+                ,"--max_eval_samples", "100"
+                ,"--max_predict_samples","100"
+                ,"--eval_accumulation_steps","8"
+                ,"--num_beams", "2"
+                ,"--repetition_penalty", "1.2"
         }
     ]
 }

@@ -18,16 +18,37 @@ from transformers import (
     set_seed,
     GPT2LMHeadModel,
     AutoModelForCausalLM,
+    # DataCollatorWithPadding
+    DataCollatorForSeq2Seq
 )
 import numpy as np
 from transformers.trainer_utils import get_last_checkpoint
 from datasets import load_dataset
+from tqdm import tqdm
 
 
-from sum_data_collator import DataCollatorForSumLanguageModeling
-from sum_dataset import LineByLineSumTextDataset
+# from sum_data_collator import DataCollatorForSumLanguageModeling
+# from sum_dataset import LineByLineSumTextDataset
 
 logger = logging.getLogger(__name__)
+
+@dataclass
+class PredictionArguments:
+    """
+    Arguments for model prediction
+    """
+    per_device_predict_batch_size: Optional[int] = field(
+        default=None,
+        metadata={"help": "Batch size to use when predicting."},
+    )
+    num_beams: Optional[int] = field(
+        default=1,
+        metadata={"help": "Number of beams to use."},
+    )
+    repetition_penalty: Optional[float] = field(
+        default=1.0,
+        metadata={"help": "Repetition penalty."},
+    )
 
 @dataclass
 class ModelArguments:
@@ -83,12 +104,33 @@ class DataArguments:
     max_target_length: Optional[int] = field(
         default=510, metadata={"help": "the max target length for summarization data. "}
     )
-    # train_max_target_length: Optional[int] = field(
-    #     default=510, metadata={"help": "the max target length for training data. "}
-    # )
-    # eval_max_target_length: Optional[int] = field(
-    #     default=510, metadata={"help": "the max target length for dev data. "}
-    # )
+    max_train_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "For debugging purposes or quicker training, truncate the number of training examples to this "
+                "value if set."
+            )
+        },
+    )
+    max_eval_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
+                "value if set."
+            )
+        },
+    )
+    max_predict_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "For debugging purposes or quicker training, truncate the number of prediction examples to this "
+                "value if set."
+            )
+        },
+    )
     block_size: int = field(
         default=-1,
         metadata={
@@ -99,54 +141,20 @@ class DataArguments:
             )
         },
     )
-
-
-def get_dataset(
-    args: DataArguments,
-    tokenizer: PreTrainedTokenizer,
-    evaluate: bool = False,
-    cache_dir: Optional[str] = None,
-    training_args: TrainingArguments = None,
-):
-    # file_path = args.eval_data_file if evaluate else args.train_data_file
-    dataset_name = args.dataset_name
-    dataset_config_name = args.dataset_config_name
-    max_source_length = args.max_source_length
-    max_target_length = args.train_max_target_length if not evaluate else args.eval_max_target_length
-    text_column = args.text_column
-    summary_column = args.summary_column
-
-    # Downloading and loading a dataset from the hub.
-    raw_datasets = load_dataset(
-        dataset_name,
-        dataset_config_name,
-        cache_dir=cache_dir,
+    overwrite_cache: bool = field(
+        default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
-    if evaluate:
-        split = raw_datasets['validation']
-    else:
-        split = raw_datasets['train']
-    
-    dataset = LineByLineSumTextDataset(
-        tokenizer=tokenizer,
-        split=split,
-        text_column=text_column, 
-        summary_column=summary_column, 
-        block_size=512,
-        bos_tok=tokenizer.bos_token,
-        eos_tok=tokenizer.sep_token,
-        max_source_length=max_source_length,
-        max_target_length=max_target_length,
-        use_stream_mode=False
+    preprocessing_num_workers: Optional[int] = field(
+        default=None,
+        metadata={"help": "The number of processes to use for the preprocessing."},
     )
 
-    return dataset
 
 
 def finetune():
     # parse args
-    parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
-    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser((ModelArguments, DataArguments, PredictionArguments, TrainingArguments))
+    model_args, data_args, prediction_args, training_args = parser.parse_args_into_dataclasses()
 
     # Detecting last checkpoint.
     last_checkpoint = None
@@ -188,7 +196,9 @@ def finetune():
         #tokenizer.add_token(f"<|prefix{x}|>")
     embedding_layer = model.resize_token_embeddings(len(tokenizer))
     # set up data collator
-    data_collator = DataCollatorForSumLanguageModeling(tokenizer=tokenizer)
+    # data_collator = DataCollatorForSumLanguageModeling(tokenizer=tokenizer)
+    # data_collator = DataCollatorWithPadding(tokenizer=tokenizer, padding='max_length', max_length= data_args.max_source_length + data_args.max_target_length + 2)
+    data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, padding=True, max_length=data_args.max_source_length + data_args.max_target_length + 2)
     # set up data sets
     # train_dataset = get_dataset(data_args, tokenizer=tokenizer, training_args=training_args)
     # eval_dataset = get_dataset(data_args, tokenizer=tokenizer, evaluate=True)
@@ -237,7 +247,7 @@ def finetune():
             )
 
     if training_args.do_eval:
-        eval_dataset = raw_datasets['eval']
+        eval_dataset = raw_datasets['validation']
         if data_args.max_eval_samples is not None:
             max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
             eval_dataset = eval_dataset.select(range(max_eval_samples))
@@ -252,7 +262,7 @@ def finetune():
             )
 
     if training_args.do_predict:
-        predict_dataset = raw_datasets['predict']
+        predict_dataset = raw_datasets['test']
         if data_args.max_predict_samples is not None:
             max_predict_samples = min(len(predict_dataset), data_args.max_predict_samples)
             predict_dataset = predict_dataset.select(range(max_predict_samples))
@@ -274,7 +284,7 @@ def finetune():
         train_dataset=train_dataset if training_args.do_train else None,
         eval_dataset=eval_dataset if training_args.do_eval else None,
         tokenizer=tokenizer,
-        # data_collator=data_collator
+        data_collator=data_collator
     )
 
     # launch fine tuning
@@ -309,30 +319,79 @@ def finetune():
         trainer.save_metrics("eval", metrics)
 
     if training_args.do_predict:
+        # TODO
+        # batch
+        batch_size = prediction_args.per_device_predict_batch_size
+        generated_texts = []
+
+        sentences = raw_datasets['test'][data_args.text_column]
         logger.info("*** Predict ***")
 
-        # predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", **gen_kwargs)
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict")
-        metrics = predict_results.metrics
-        max_predict_samples = (
-            data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
-        )
-        metrics["predict_samples"] = min(max_predict_samples, len(predict_dataset))
+        for i in tqdm(range(0, len(sentences), batch_size)):
+            batch_sentences = sentences[i:i + batch_size]
 
-        trainer.log_metrics("predict", metrics)
-        trainer.save_metrics("predict", metrics)
+            # encode
+            input_ids = tokenizer(batch_sentences,return_tensors='pt', truncation=True, padding=True, max_length=data_args.max_source_length)['input_ids']
+            input_ids = input_ids.to(model.device)
 
-        if trainer.is_world_process_zero():
-            if training_args.predict_with_generate:
-                predictions = predict_results.predictions
-                predictions = np.where(predictions != -100, predictions, tokenizer.pad_token_id)
-                predictions = tokenizer.batch_decode(
-                    predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True
+            # add SEP token, just like we did in training
+            batch_sep = torch.tensor([separator] * len(input_ids)).unsqueeze(-1).to(input_ids.device)
+            input_ids = torch.cat([input_ids, batch_sep], dim=1)
+
+            # Set the forced beginning of sentence (BOS) token IDs
+            # forced_bos_token_id = tokenizer.convert_tokens_to_ids(["I", "reactions:"])
+
+            # generate
+            with torch.no_grad():
+                outputs = model.generate(
+                    input_ids=input_ids,
+                    max_length=data_args.max_source_length + 2 + data_args.max_target_length,
+                    num_return_sequences=1,
+                    # forced_bos_token_id=forced_bos_token_id,
+                    do_sample=True,
+                    num_beams=prediction_args.num_beams,  # Set the number of beams for beam search
+                    repetition_penalty=prediction_args.repetition_penalty,
+                    early_stopping=True,  # Enable early stopping of generation
+                    pad_token_id=tokenizer.eos_token_id
                 )
-                predictions = [pred.strip() for pred in predictions]
-                output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
-                with open(output_prediction_file, "w") as writer:
-                    writer.write("\n".join(predictions))
+
+            # Convert generated output back into text
+            batch_generated_texts = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+            # Extract the generated part
+            # batch_generated_texts = [generation[input_ids.shape[1]:] for generation in batch_generated_texts]
+            generated_texts.extend(batch_generated_texts)
+            
+        # save outputs
+        output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
+        with open(output_prediction_file, "w") as writer:
+            writer.write("\n".join(generated_texts))
+
+    # if training_args.do_predict:
+    #     logger.info("*** Predict ***")
+
+    #     # predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", **gen_kwargs)
+    #     predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict")
+    #     metrics = predict_results.metrics
+    #     max_predict_samples = (
+    #         data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
+    #     )
+    #     metrics["predict_samples"] = min(max_predict_samples, len(predict_dataset))
+
+    #     trainer.log_metrics("predict", metrics)
+    #     trainer.save_metrics("predict", metrics)
+
+    #     if trainer.is_world_process_zero():
+    #         # NOTE: need to change this
+    #         if training_args.predict_with_generate:
+    #             predictions = predict_results.predictions
+    #             predictions = np.where(predictions != -100, predictions, tokenizer.pad_token_id)
+    #             predictions = tokenizer.batch_decode(
+    #                 predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True
+    #             )
+    #             predictions = [pred.strip() for pred in predictions]
+    #             output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
+    #             with open(output_prediction_file, "w") as writer:
+    #                 writer.write("\n".join(predictions))
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
     if data_args.dataset_name is not None:
