@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "./tasks/icsr_extraction/gpt2/finetune_for_summarization.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--output_dir", "./checkpoints/gpt2-ICSR-Extraction" 
+                ,"--model_name_or_path", "gpt2"
+                ,"--dataset_name", "FAERS-PubMed/BioDEX-ICSR"
+                ,"--tokenizer_name", "gpt2"
+                ,"--per_device_train_batch_size", "1" 
+                ,"--per_device_eval_batch_size", "1" 
+                ,"--save_strategy", "no" 
+                ,"--do_eval"
+                ,"--text_column", "abstract"
+                ,"--summary_column", "target"
+                ,"--save_total_limit", "2" 
+                ,"--overwrite_output_dir"
+                ,"--gradient_accumulation_steps", "1" 
+                ,"--learning_rate", "0.001" 
+                ,"--warmup_ratio", "0.5" 
+                ,"--weight_decay", "0.0" 
+                ,"--seed", "7" 
+                ,"--evaluation_strategy", "steps" 
+                ,"--eval_steps", "200" 
+                ,"--bf16"
+                ,"--num_train_epochs", "1" 
+                ,"--logging_steps", "100" 
+                ,"--logging_first_step"
+                ]
+        }
+    ]
+}
