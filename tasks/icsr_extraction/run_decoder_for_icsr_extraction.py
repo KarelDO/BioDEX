@@ -279,12 +279,8 @@ def finetune():
 
     # launch fine tuning
     if training_args.do_train:
-        checkpoint = None
-        if training_args.resume_from_checkpoint is not None:
-            checkpoint = training_args.resume_from_checkpoint
-        elif last_checkpoint is not None:
-            checkpoint = last_checkpoint
-        train_result = trainer.train(resume_from_checkpoint=checkpoint)
+
+        train_result = trainer.train(resume_from_checkpoint=last_checkpoint)
         trainer.save_model()  # Saves the tokenizer too for easy upload
 
         metrics = train_result.metrics
@@ -355,7 +351,7 @@ def finetune():
         output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
         generated_texts = [text.replace('\n',' ').strip() for text in generated_texts]
         with open(output_prediction_file, "w") as writer:
-            writer.write("\n".join(generated_texts.replace('\n',' ')))
+            writer.write("\n".join(generated_texts))
 
     # if training_args.do_predict:
     #     logger.info("*** Predict ***")
