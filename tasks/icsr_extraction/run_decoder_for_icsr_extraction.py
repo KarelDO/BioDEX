@@ -209,11 +209,10 @@ def finetune():
         cache_dir=None,
     )
 
-    padding = False
     def preprocess_function(examples):
         # tokenize input text and summary
-        text_encoding = tokenizer(examples[data_args.text_column], max_length=data_args.max_source_length, padding=padding, truncation=True, is_split_into_words=False)['input_ids']
-        summary_encoding = tokenizer(examples[data_args.summary_column], max_length=data_args.max_target_length, padding=padding, truncation=True, is_split_into_words=False)['input_ids']
+        text_encoding = tokenizer(examples[data_args.text_column], max_length=data_args.max_source_length, padding=False, truncation=True, is_split_into_words=False)['input_ids']
+        summary_encoding = tokenizer(examples[data_args.summary_column], max_length=data_args.max_target_length, padding=False, truncation=True, is_split_into_words=False)['input_ids']
         # concatenate
         edited_sents = []
         for t, s in zip(text_encoding, summary_encoding):
@@ -266,15 +265,6 @@ def finetune():
         if data_args.max_predict_samples is not None:
             max_predict_samples = min(len(predict_dataset), data_args.max_predict_samples)
             predict_dataset = predict_dataset.select(range(max_predict_samples))
-        with training_args.main_process_first(desc="predict dataset map pre-processing"):
-            predict_dataset = predict_dataset.map(
-                preprocess_function,
-                batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                remove_columns=predict_dataset.column_names,
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc="Running tokenizer on predict dataset",
-            )
 
     
     # set up trainer
@@ -319,19 +309,19 @@ def finetune():
         trainer.save_metrics("eval", metrics)
 
     if training_args.do_predict:
-        # TODO
-        # batch
-        batch_size = prediction_args.per_device_predict_batch_size
-        generated_texts = []
-
-        sentences = raw_datasets['test'][data_args.text_column]
         logger.info("*** Predict ***")
+        
+        # assume batch size 1 to avoid issues with padding the source sentences in ways unseen during training        
+        batch_size = 1
+
+        generated_texts = []
+        sentences = predict_dataset[data_args.text_column]
 
         for i in tqdm(range(0, len(sentences), batch_size)):
             batch_sentences = sentences[i:i + batch_size]
 
             # encode
-            input_ids = tokenizer(batch_sentences,return_tensors='pt', truncation=True, padding=True, max_length=data_args.max_source_length)['input_ids']
+            input_ids = tokenizer(batch_sentences,return_tensors='pt', truncation=True, padding=True if batch_size > 1 else False, max_length=data_args.max_source_length)['input_ids']
             input_ids = input_ids.to(model.device)
 
             # add SEP token, just like we did in training
@@ -352,19 +342,20 @@ def finetune():
                     num_beams=prediction_args.num_beams,  # Set the number of beams for beam search
                     repetition_penalty=prediction_args.repetition_penalty,
                     early_stopping=True,  # Enable early stopping of generation
-                    pad_token_id=tokenizer.eos_token_id
+                    pad_token_id=tokenizer.pad_token_id
                 )
 
+            # extract the generated part
+            outputs = [out[input_ids.shape[1]:] for out in outputs]
             # Convert generated output back into text
             batch_generated_texts = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-            # Extract the generated part
-            # batch_generated_texts = [generation[input_ids.shape[1]:] for generation in batch_generated_texts]
             generated_texts.extend(batch_generated_texts)
             
         # save outputs
         output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.txt")
+        generated_texts = [text.replace('\n',' ').strip() for text in generated_texts]
         with open(output_prediction_file, "w") as writer:
-            writer.write("\n".join(generated_texts))
+            writer.write("\n".join(generated_texts.replace('\n',' ')))
 
     # if training_args.do_predict:
     #     logger.info("*** Predict ***")
@@ -402,8 +393,8 @@ def finetune():
         else:
             kwargs["dataset"] = data_args.dataset_name
 
-    if data_args.lang is not None:
-        kwargs["language"] = data_args.lang
+    # if data_args.lang is not None:
+    #     kwargs["language"] = data_args.lang
 
     if training_args.push_to_hub:
         trainer.push_to_hub(**kwargs)
