@@ -1,0 +1,47 @@
+############ Debugging arguments ############
+seed: 42
+# overwrite_output_dir: True
+overwrite_output_dir: False
+# max_train_samples: 1000
+# max_eval_samples: 100
+# max_predict_samples: 100
+
+############ Data and model ############
+dataset_name: FAERS-PubMed/BioDEX-ICSR
+text_column: abstract
+summary_column: target
+model_name_or_path: stanford-crfm/BioMedLM
+tokenizer_name: stanford-crfm/BioMedLM
+output_dir: ../../checkpoints/BioMedLM-BioDEX-ICSR
+max_source_length: 512
+max_target_length: 510
+do_train: True
+do_eval: True
+do_predict: True
+
+############ Training parameters ############
+per_device_train_batch_size: 4
+per_device_eval_batch_size: 4
+per_device_predict_batch_size: 1 # Must always be equal to 1 to avoid padding issues with current code
+gradient_accumulation_steps: 1
+eval_accumulation_steps: 8
+learning_rate: 0.001
+warmup_ratio: 0.5
+weight_decay: 0.0
+bf16: True
+num_train_epochs: 5
+
+
+############ Generation parameters ############
+num_beams: 2
+repetition_penalty: 1.2
+
+############# Saving and logging ############
+evaluation_strategy: epoch
+logging_strategy: steps
+save_strategy: epoch
+# eval_steps: 20 # keep it low to see the curve in the beginning
+logging_steps: 100
+# save_steps: 1000
+save_total_limit: 2
+report_to: wandb
