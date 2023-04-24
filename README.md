@@ -8,6 +8,10 @@ Create the conda environment:
     pip install -r requirements.txt
     pip install .
 
+## The BioDEX resource
+
+The report fields are described in detail [here](https://open.fda.gov/apis/drug/event/searchable-fields/).
+
 ## Dataset Creation
 All our dataset can be downloaded from HuggingFace.
 
