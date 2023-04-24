@@ -7,8 +7,8 @@ overwrite_output_dir: False
 # max_predict_samples: 100
 
 ############ Data and model ############
-dataset_name: ../../data/BioDEX-ICSR-Fulltext
-text_column: abstract
+dataset_name: FAERS-PubMed/BioDEX-ICSR
+text_column: fulltext_processed
 summary_column: target
 model_name_or_path: gpt2
 tokenizer_name: gpt2
