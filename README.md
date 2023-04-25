@@ -7,7 +7,7 @@ BioDEX is created by combining the following resources:
 - [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/): Distribution of full-text PubMed articles.
 - [FAERS](https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers): Distribution of Individual Case Sefety Reports.
 
-A preliminary write-up including initial results is included in `supplementary_material/`.
+A preliminary write-up including initial results is included in `supplementary_material/`. A description of the dataset fields is given in `supplementary_material/BioDEX_Dataset_Card.pdf`.
 
 ## Disclaimer
 We have only begun to explore our dataset and the capabilities and limitations of models trained on them. Understanding these limitations is especially important in a domain like medicine. **Therefore, we strongly recommend against using this model in production for ICSR reporting.**
