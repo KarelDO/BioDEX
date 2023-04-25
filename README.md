@@ -2,6 +2,9 @@
 
 BioDEX is a raw resource for drug safety monitoring that bundles full-text and abstract-only PubMed papers with Individual Case Safety Reports (ICSRs). These ICSRs contain structured information about the Adverse Drug Events (ADEs) described in the papers, and are produced by medical experts.
 
+We hope that our resource paves the way for (semi-)automated ICSR reporting systems, which one day could aid humans to perform drug safety monitoring. Additionally, we believe our task is a good resource to train and evaluate the biomedical capabilities of Large Language Models.
+
+
 BioDEX is created by combining the following resources:
 - [PubMed Medline](https://www.nlm.nih.gov/bsd/difference.html): Distribution of PubMed article metadata and abstracts.
 - [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/): Distribution of full-text PubMed articles.
@@ -10,7 +13,7 @@ BioDEX is created by combining the following resources:
 A preliminary write-up including initial results is included in `supplementary_material/`. A description of the dataset fields is given in `supplementary_material/BioDEX_Dataset_Card.pdf`.
 
 ## Disclaimer
-We have only begun to explore our dataset and the capabilities and limitations of models trained on them. Understanding these limitations is especially important in a domain like medicine. **Therefore, we strongly recommend against using this model in production for ICSR reporting.**
+We have only begun to explore our dataset and the capabilities and limitations of models trained on them. Understanding these limitations is especially important in a domain like medicine. **Therefore, we strongly recommend against using models trained on this resource in production for ICSR reporting.**
 
 BioDEX is a work in progress and is not yet published. Everything is subject to change.
 
