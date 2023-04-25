@@ -23,7 +23,7 @@ from transformers import (
 )
 import numpy as np
 from transformers.trainer_utils import get_last_checkpoint
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from tqdm import tqdm
 
 
@@ -234,11 +234,18 @@ def finetune():
     # train_dataset = get_dataset(data_args, tokenizer=tokenizer, training_args=training_args)
     # eval_dataset = get_dataset(data_args, tokenizer=tokenizer, evaluate=True)
 
-    raw_datasets = load_dataset(
-        data_args.dataset_name,
-        data_args.dataset_config_name,
-        cache_dir=None,
-    )
+    if os.path.isdir(data_args.dataset_name):
+        logger.info(f"Loading dataset from disk: {data_args.dataset_name}.")
+        raw_datasets = load_from_disk(
+            data_args.dataset_name,
+        )
+    else:
+        logger.info(f"Loading dataset from Hugging Face Hub: {data_args.dataset_name}.")
+        raw_datasets = load_dataset(
+            data_args.dataset_name,
+            data_args.dataset_config_name,
+            cache_dir=None,
+        )
 
     def preprocess_function(examples):
         # tokenize input text and summary
