@@ -76,7 +76,8 @@ TEXT: INTRODUCTION Systemic lupus erythematosus (SLE) is a chronic inflammatory 
 ```
 
 Example output:
-```serious: yes 
+```
+serious: yes 
 patientsex: female 
 drugs: AMLODIPINE BESYLATE, AZATHIOPRINE, HYDROXYCHLOROQUINE, PREDNISOLONE, SILDENAFIL 
 reactions: Bone marrow toxicity, Cytomegalovirus infection, Cytomegalovirus mucocutaneous ulcer, Febrile neutropenia, Leukoplakia, Odynophagia, Oropharyngeal candidiasis, Pancytopenia, Product use issue, Red blood cell poikilocytes present, Vitamin D deficiency
