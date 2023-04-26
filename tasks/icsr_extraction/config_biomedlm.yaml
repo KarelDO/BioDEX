@@ -8,11 +8,11 @@ overwrite_output_dir: False
 
 ############ Data and model ############
 dataset_name: FAERS-PubMed/BioDEX-ICSR
-text_column: abstract
+text_column: fulltext_processed
 summary_column: target
 model_name_or_path: stanford-crfm/BioMedLM
 tokenizer_name: stanford-crfm/BioMedLM
-output_dir: ../../checkpoints/BioMedLM-BioDEX-ICSR
+output_dir: ../../checkpoints/BioMedLM-BioDEX-ICSR-fulltext
 max_source_length: 512
 max_target_length: 510
 do_train: True
@@ -25,11 +25,11 @@ per_device_eval_batch_size: 4
 per_device_predict_batch_size: 1 # Must always be equal to 1 to avoid padding issues with current code
 gradient_accumulation_steps: 1
 eval_accumulation_steps: 8
-learning_rate: 0.001
-warmup_ratio: 0.5
+learning_rate: 0.0005
+warmup_ratio: 0.1
 weight_decay: 0.0
 bf16: True
-num_train_epochs: 5
+num_train_epochs: 10
 
 
 ############ Generation parameters ############
@@ -45,3 +45,6 @@ logging_steps: 100
 # save_steps: 1000
 save_total_limit: 2
 report_to: wandb
+load_best_model_at_end: True
+metric_for_best_model: loss
+greater_is_better: False
