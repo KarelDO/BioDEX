@@ -11,7 +11,7 @@ dataset_name: FAERS-PubMed/BioDEX-ICSR
 text_column: fulltext_processed
 summary_column: target
 model_name_or_path: gpt2-large
-tokenizer_name: gpt2
+tokenizer_name: gpt2-large
 output_dir: ../../checkpoints/gpt2-large-BioDEX-ICSR-Fulltext
 max_source_length: 512
 max_target_length: 510
@@ -20,8 +20,8 @@ do_eval: True
 do_predict: True
 
 ############ Training parameters ############
-per_device_train_batch_size: 8
-per_device_eval_batch_size: 8
+per_device_train_batch_size: 4
+per_device_eval_batch_size: 4
 per_device_predict_batch_size: 1 # Must always be equal to 1 to avoid padding issues with current code
 gradient_accumulation_steps: 1
 eval_accumulation_steps: 8
