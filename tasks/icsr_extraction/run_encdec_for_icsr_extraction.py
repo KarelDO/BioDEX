@@ -520,6 +520,7 @@ def main():
     force_words_ids = [tokenizer.encode(word)[:-1] for word in force_words]  # skip eos
     gen_kwargs = {
         "force_words_ids": force_words_ids,
+        "num_beams": training_args.generation_num_beams,
         "repetition_penalty": model_args.repetition_penalty,
     }
     logger.info(f"repetition_penalty: {model_args.repetition_penalty}")
@@ -858,22 +859,21 @@ def main():
         trainer.save_metrics("predict", metrics)
 
         if trainer.is_world_process_zero():
-            if training_args.predict_with_generate:
-                predictions = predict_results.predictions
-                predictions = np.where(
-                    predictions != -100, predictions, tokenizer.pad_token_id
-                )
-                predictions = tokenizer.batch_decode(
-                    predictions,
-                    skip_special_tokens=True,
-                    clean_up_tokenization_spaces=True,
-                )
-                predictions = [pred.strip() for pred in predictions]
-                output_prediction_file = os.path.join(
-                    training_args.output_dir, "generated_predictions.txt"
-                )
-                with open(output_prediction_file, "w") as writer:
-                    writer.write("\n".join(predictions))
+            predictions = predict_results.predictions
+            predictions = np.where(
+                predictions != -100, predictions, tokenizer.pad_token_id
+            )
+            predictions = tokenizer.batch_decode(
+                predictions,
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True,
+            )
+            predictions = [pred.strip() for pred in predictions]
+            output_prediction_file = os.path.join(
+                training_args.output_dir, "generated_predictions.txt"
+            )
+            with open(output_prediction_file, "w") as writer:
+                writer.write("\n".join(predictions))
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
     if data_args.dataset_name is not None:
