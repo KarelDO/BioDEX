@@ -1,0 +1,48 @@
+############ Debugging arguments ############
+# max_train_samples: 1000 # For debugging purposes, comment for final run
+# max_eval_samples: 100 # For debugging purposes, comment for final run
+# overwrite_output_dir: True # Set to False after development is finished
+overwrite_cache: False
+seed: 42
+
+############ Data and model ############
+dataset_name: FAERS-PubMed/BioDEX-ICSR
+text_column: fulltext_processed
+summary_column: target
+model_name_or_path: google/flan-t5-large
+output_dir: ../../checkpoints/flan-t5-large-BioDEX-ICSR
+max_source_length: 512
+max_target_length: 128
+# pad_to_max_length: True
+do_train: True
+do_eval: True
+do_predict: True
+# source_prefix: 
+
+############ Training parameters ############
+# lr_scheduler_type: linear
+learning_rate: 0.001
+optim: adafactor
+per_device_train_batch_size: 32
+per_device_eval_batch_size: 64
+gradient_accumulation_steps: 1
+num_train_epochs: 5.0
+
+############ Generation parameters ############
+predict_with_generate: True
+generation_num_beams: 5
+repetition_penalty: 1.2
+
+############# Saving and logging ############
+evaluation_strategy: epoch
+logging_strategy: steps
+save_strategy: epoch
+# eval_steps: 20 # keep it low to see the curve in the beginning
+logging_steps: 100
+# save_steps: 1000
+save_total_limit: 2
+report_to: wandb
+# cache_dir: './cache'
+load_best_model_at_end: True
+metric_for_best_model: loss
+greater_is_better: False
