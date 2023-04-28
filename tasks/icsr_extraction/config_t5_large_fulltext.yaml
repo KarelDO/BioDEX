@@ -20,13 +20,15 @@ do_eval: True
 # do_predict: True
 
 ############ Training parameters ############
-# lr_scheduler_type: linear
+lr_scheduler_type: linear
+warmup_ratio: 0.0
 learning_rate: 0.001
 optim: adafactor
 per_device_train_batch_size: 8
-per_device_eval_batch_size: 64
+per_device_eval_batch_size: 16
 gradient_accumulation_steps: 1
-num_train_epochs: 5.0
+eval_accumulation_steps: 16
+num_train_epochs: 10
 bf16: True
 
 ############ Generation parameters ############
@@ -41,7 +43,7 @@ save_strategy: epoch
 # eval_steps: 20 # keep it low to see the curve in the beginning
 logging_steps: 100
 # save_steps: 1000
-save_total_limit: 2
+save_total_limit: 1
 report_to: wandb
 # cache_dir: './cache'
 load_best_model_at_end: True
