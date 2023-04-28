@@ -9,6 +9,7 @@ seed: 42
 dataset_name: FAERS-PubMed/BioDEX-ICSR
 text_column: fulltext_processed
 summary_column: target
+# source_prefix: 
 model_name_or_path: google/flan-t5-large
 output_dir: ../../checkpoints/flan-t5-large-BioDEX-ICSR
 max_source_length: 512
@@ -17,7 +18,6 @@ max_target_length: 128
 do_train: True
 do_eval: True
 do_predict: True
-# source_prefix: 
 
 ############ Training parameters ############
 # lr_scheduler_type: linear
