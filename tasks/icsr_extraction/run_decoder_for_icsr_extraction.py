@@ -177,7 +177,7 @@ def finetune():
         training_args,
     ) = parser.parse_args_into_dataclasses()
 
-    os.environ['WANDB_PROJECT'] = 'biodex'
+    os.environ["WANDB_PROJECT"] = "biodex"
 
     # Detecting last checkpoint.
     last_checkpoint = None

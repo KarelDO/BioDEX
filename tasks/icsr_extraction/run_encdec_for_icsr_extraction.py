@@ -30,6 +30,7 @@ import nltk  # Here to have a nice missing dependency error message early on
 import numpy as np
 from datasets import load_dataset, load_from_disk
 from filelock import FileLock
+from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
 
 import transformers
 from transformers import (
@@ -307,6 +308,15 @@ class DataTrainingArguments:
         },
     )
 
+    use_peft_lora: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": (
+                "Use Low-Rank Adaptation from the PEFT library to fine-tune the model."
+            )
+        },
+    )
+
     def __post_init__(self):
         if (
             self.dataset_name is None
@@ -373,7 +383,7 @@ def main():
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-    os.environ['WANDB_PROJECT'] = 'biodex'
+    os.environ["WANDB_PROJECT"] = "biodex"
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -516,6 +526,34 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
+
+    # peft lora
+    if data_args.use_peft_lora:
+
+        peft_config = LoraConfig(
+            task_type=TaskType.SEQ_2_SEQ_LM,
+            inference_mode=False,
+            r=8,
+            lora_alpha=32,
+            lora_dropout=0.1,
+        )
+
+        model = get_peft_model(model, peft_config)
+
+        trainable_params = 0
+        all_param = 0
+        for _, param in model.named_parameters():
+            num_params = param.numel()
+            # if using DS Zero 3 and the weights are initialized empty
+            if num_params == 0 and hasattr(param, "ds_numel"):
+                num_params = param.ds_numel
+
+            all_param += num_params
+            if param.requires_grad:
+                trainable_params += num_params
+        logger.info(
+            f"Using LORA: trainable params: {trainable_params:,} || all params: {all_param:,} || trainable%: {100 * trainable_params / all_param}"
+        )
 
     # Set generation parameters for prediction
     force_words = ["serious:", "patientsex:", "drugs:", "reactions:"]
