@@ -2,6 +2,41 @@ import argparse
 from datasets import load_dataset
 
 from src import Icsr
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def evaluate_icsr(pred_strings, gold_strings):
+    # Remove newlines
+    pred_strings = [line.strip() for line in pred_strings]
+    gold_strings = [line.strip() for line in gold_strings]
+
+    # Parse in ICSR format
+    pred_icsrs = [Icsr.from_string(x) for x in pred_strings]
+    gold_icsrs = [Icsr.from_string(x) for x in gold_strings]
+
+    # report if we failed to parse predictions
+    failed = len([p for p in pred_icsrs if p == None])
+    logger.info(
+        f"Evaluate: Failed to parse {failed:,}/{len(pred_icsrs):,} predictions."
+    )
+
+    # Evaluate
+    scores = [
+        p.score(g) if p else (0.0, 0.0, 0.0) for p, g in zip(pred_icsrs, gold_icsrs)
+    ]
+
+    precision = sum([s[0] for s in scores]) / len(scores)
+    recall = sum([s[1] for s in scores]) / len(scores)
+    f1 = sum([s[2] for s in scores]) / len(scores)
+
+    logger.info(f"Evaluate: precision: {precision}")
+    logger.info(f"Evaluate: recall: {recall}")
+    logger.info(f"Evaluate: f1: {f1}")
+
+    return (precision, recall, f1), failed
+
 
 if __name__ == "__main__":
     # Parse command line arguments
@@ -14,32 +49,10 @@ if __name__ == "__main__":
 
     # Read text file
     with open(args.file_path, "r") as file:
-        lines = file.readlines()
-
-    # Get predicted targets, remove newlines
-    pred_strings = [line.strip() for line in lines]
+        pred_strings = file.readlines()
 
     # Download Hugging Face dataset and get the gold targets
     dataset = load_dataset(args.dataset_name)
     gold_strings = dataset["test"]["target"]
 
-    # Parse in ICSR format
-    pred_icsrs = [Icsr.from_string(x) for x in pred_strings]
-    gold_icsrs = [Icsr.from_string(x) for x in gold_strings]
-
-    # report if we failed to parse predictions
-    failed = [p for p in pred_icsrs if p == None]
-    print(f"Failed to parse {len(failed):,}/{len(pred_icsrs):,} predictions.")
-
-    # Evaluate
-    scores = [
-        p.score(g) if p else (0.0, 0.0, 0.0) for p, g in zip(pred_icsrs, gold_icsrs)
-    ]
-
-    precision = sum([s[0] for s in scores]) / len(scores)
-    recall = sum([s[1] for s in scores]) / len(scores)
-    f1 = sum([s[2] for s in scores]) / len(scores)
-
-    print(f"precision: {precision}")
-    print(f"recall: {recall}")
-    print(f"f1: {f1}")
+    evaluate_icsr(pred_strings, gold_strings)
