@@ -62,4 +62,11 @@ if __name__ == "__main__":
         pred_strings = file.readlines()
 
     # Download Hugging Face dataset and get the gold targets
-    evaluate_icsr_from_dataset(pred_strings, args.dataset_name, args.dataset_split)
+    (precision, recall, f1), failed = evaluate_icsr_from_dataset(
+        pred_strings, args.dataset_name, args.dataset_split
+    )
+
+    print(f"Evaluate: precision: {precision}")
+    print(f"Evaluate: recall: {recall}")
+    print(f"Evaluate: f1: {f1}")
+    print(f"Evaluate: failed: {failed}")
