@@ -534,10 +534,11 @@ def main():
 
         peft_config = LoraConfig(
             task_type=TaskType.SEQ_2_SEQ_LM,
-            inference_mode=False,
-            r=8,
+            target_modules=["q", "v"],
+            r=16,
             lora_alpha=32,
-            lora_dropout=0.1,
+            lora_dropout=0.05,
+            bias="none",
         )
 
         model = get_peft_model(model, peft_config)
@@ -827,9 +828,10 @@ def main():
     force_words = ["serious:", "patientsex:", "drugs:", "reactions:"]
     force_words_ids = [tokenizer.encode(word)[:-1] for word in force_words]  # skip eos
     gen_kwargs = {
-        "force_words_ids": force_words_ids
-        if training_args.generation_num_beams > 1
-        else None,
+        # "force_words_ids": force_words_ids
+        # if training_args.generation_num_beams > 1
+        # else None,
+        "force_words_ids": None,
         "repetition_penalty": model_args.repetition_penalty,
     }
     logger.info("Extra generate arguments:")
