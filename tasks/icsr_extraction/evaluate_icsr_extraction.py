@@ -7,6 +7,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def evaluate_icsr_from_dataset(pred_strings, dataset_name, dataset_split):
+    dataset = load_dataset(dataset_name)
+    gold_strings = dataset[dataset_split]["target"]
+
+    return evaluate_icsr(pred_strings, gold_strings)
+
+
 def evaluate_icsr(pred_strings, gold_strings):
     # Remove newlines
     pred_strings = [line.strip() for line in pred_strings]
@@ -45,6 +52,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "dataset_name", type=str, help="Name of the Hugging Face dataset"
     )
+    parser.add_argument(
+        "dataset_split", type=str, help="Split to evaluate on, either 'eval' or 'test'."
+    )
     args = parser.parse_args()
 
     # Read text file
@@ -52,7 +62,4 @@ if __name__ == "__main__":
         pred_strings = file.readlines()
 
     # Download Hugging Face dataset and get the gold targets
-    dataset = load_dataset(args.dataset_name)
-    gold_strings = dataset["test"]["target"]
-
-    evaluate_icsr(pred_strings, gold_strings)
+    evaluate_icsr_from_dataset(pred_strings, args.dataset_name, args.dataset_split)

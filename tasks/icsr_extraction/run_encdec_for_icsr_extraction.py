@@ -56,7 +56,7 @@ from transformers.utils import (
 )
 from transformers.utils.versions import require_version
 
-from evaluate_icsr_extraction import evaluate_icsr
+from evaluate_icsr_extraction import evaluate_icsr_from_dataset
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -279,7 +279,7 @@ class DataTrainingArguments:
         },
     )
     num_beams: Optional[int] = field(
-        default=None,
+        default=1,
         metadata={
             "help": (
                 "Number of beams to use for evaluation. This argument will be passed to ``model.generate``, "
@@ -810,28 +810,28 @@ def main():
         ]
         result["gen_len"] = np.mean(prediction_lens)
 
-        # custom icsr metric
-        (precision, recall, f1), fails = evaluate_icsr(decoded_preds, decoded_labels)
-        parse_percent = 100 * (1 - (fails / len(decoded_labels)))
+        # # custom icsr metric
+        # (precision, recall, f1), fails = evaluate_icsr(decoded_preds, decoded_labels)
+        # parse_percent = 100 * (1 - (fails / len(decoded_labels)))
 
-        result.update(
-            {
-                "icsr_precision": precision,
-                "icsr_recall": recall,
-                "icsr_f1": f1,
-                "icsr_parse_percent": parse_percent,
-            }
-        )
+        # result.update(
+        #     {
+        #         "icsr_precision": precision,
+        #         "icsr_recall": recall,
+        #         "icsr_f1": f1,
+        #         "icsr_parse_percent": parse_percent,
+        #     }
+        # )
 
-        # get some examples to log
-        example_preds = decoded_preds[:100]
-        example_labels = decoded_labels[:100]
-        example_table = wandb.Table(
-            columns=["prediction", "label"],
-            data=list(zip(example_preds, example_labels)),
-        )
+        # # get some examples to log
+        # example_preds = decoded_preds[:100]
+        # example_labels = decoded_labels[:100]
+        # example_table = wandb.Table(
+        #     columns=["prediction", "label"],
+        #     data=list(zip(example_preds, example_labels)),
+        # )
+        # # result.update({"examples": example_table})
         # result.update({"examples": example_table})
-        result.update({"examples": example_table})
         return result
 
     # Override the decoding parameters of Seq2SeqTrainer
@@ -891,8 +891,6 @@ def main():
         )
         metrics["train_samples"] = min(max_train_samples, len(train_dataset))
 
-        # do not log the wandb table
-        metrics.pop("train_examples")
         trainer.save_metrics("train", metrics)
         trainer.log_metrics("train", metrics)
         trainer.save_state()
@@ -901,7 +899,10 @@ def main():
     results = {}
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(metric_key_prefix="eval", **gen_kwargs)
+        eval_results = trainer.predict(
+            eval_dataset, metric_key_prefix="eval", **gen_kwargs
+        )
+        metrics = eval_results.metrics
         max_eval_samples = (
             data_args.max_eval_samples
             if data_args.max_eval_samples is not None
@@ -909,8 +910,38 @@ def main():
         )
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
-        # do not log the wandb table
-        metrics.pop("eval_examples")
+        predictions = []
+        if trainer.is_world_process_zero():
+            predictions = eval_results.predictions
+            predictions = np.where(
+                predictions != -100, predictions, tokenizer.pad_token_id
+            )
+            predictions = tokenizer.batch_decode(
+                predictions,
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True,
+            )
+            predictions = [pred.strip() for pred in predictions]
+            output_prediction_file = os.path.join(
+                training_args.output_dir, "generated_eval_predictions.txt"
+            )
+            with open(output_prediction_file, "w") as writer:
+                writer.write("\n".join(predictions))
+
+        # custom icsr metric
+        (precision, recall, f1), fails = evaluate_icsr_from_dataset(
+            predictions, data_args.dataset_name, "validation"
+        )
+        parse_percent = 100 * (1 - (fails / len(predictions)))
+        metrics.update(
+            {
+                "eval_icsr_precision": precision,
+                "eval_icsr_recall": recall,
+                "eval_icsr_f1": f1,
+                "eval_icsr_parse_percent": parse_percent,
+            }
+        )
+
         trainer.save_metrics("eval", metrics)
         trainer.log_metrics("eval", metrics)
 
@@ -928,11 +959,7 @@ def main():
         )
         metrics["predict_samples"] = min(max_predict_samples, len(predict_dataset))
 
-        # do not log the wandb table
-        metrics.pop("test_examples")
-        trainer.save_metrics("predict", metrics)
-        trainer.log_metrics("predict", metrics)
-
+        predictions = []
         if trainer.is_world_process_zero():
             predictions = predict_results.predictions
             predictions = np.where(
@@ -945,12 +972,27 @@ def main():
             )
             predictions = [pred.strip() for pred in predictions]
             output_prediction_file = os.path.join(
-                training_args.output_dir, "generated_predictions.txt"
+                training_args.output_dir, "generated_test_predictions.txt"
             )
             with open(output_prediction_file, "w") as writer:
                 writer.write("\n".join(predictions))
 
-            # TODO: custom evaluation?
+        # custom icsr metric
+        (precision, recall, f1), fails = evaluate_icsr_from_dataset(
+            predictions, data_args.dataset_name, "test"
+        )
+        parse_percent = 100 * (1 - (fails / len(predictions)))
+        metrics.update(
+            {
+                "predict_icsr_precision": precision,
+                "predict_icsr_recall": recall,
+                "predict_icsr_f1": f1,
+                "predict_icsr_parse_percent": parse_percent,
+            }
+        )
+
+        trainer.save_metrics("predict", metrics)
+        trainer.log_metrics("predict", metrics)
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
     if data_args.dataset_name is not None:
