@@ -34,9 +34,9 @@ def evaluate_icsr(pred_strings, gold_strings):
         p.score(g) if p else (0.0, 0.0, 0.0) for p, g in zip(pred_icsrs, gold_icsrs)
     ]
 
-    precision = sum([s[0] for s in scores]) / len(scores)
-    recall = sum([s[1] for s in scores]) / len(scores)
-    f1 = sum([s[2] for s in scores]) / len(scores)
+    precision = 100 * sum([s[0] for s in scores]) / len(scores)
+    recall = 100 * sum([s[1] for s in scores]) / len(scores)
+    f1 = 100 * sum([s[2] for s in scores]) / len(scores)
 
     logger.info(f"Evaluate: precision: {precision}")
     logger.info(f"Evaluate: recall: {recall}")

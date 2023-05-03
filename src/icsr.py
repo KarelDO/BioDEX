@@ -6,11 +6,11 @@ from .report import Report
 import re
 
 string_re_with_newline = re.compile(
-    r"serious: (.*)\npatientsex: (.*)\ndrugs: (.*)\nreactions: (.*)\n"
+    r"serious:[ ]?(.*) patientsex:[ ]?(.*) drugs:[ ]?(.*) reactions:[ ]?(.*)"
 )
-string_re_without_newline = re.compile(
-    r"serious: (.*) patientsex: (.*) drugs: (.*) reactions:[ ]?(.*)"
-)
+# string_re_without_newline = re.compile(
+#     r"serious: (.*) patientsex: (.*) drugs: (.*) reactions:[ ]?(.*)"
+# )
 
 
 def get_set_precision_and_recalls(l1, l2):
@@ -67,15 +67,16 @@ class Icsr(BaseModel):
 
     @classmethod
     def from_string(cls, string: str):
-        match = string_re_without_newline.match(string)
-        if not match:
-            match = string_re_with_newline.match(string)
+        # match = string_re_without_newline.match(string)
+        # if not match:
+        string = string.replace("\n", " ")
+        match = string_re_with_newline.match(string)
 
         if match:
             serious = match.group(1)
             patientsex = match.group(2)
-            drugs = match.group(3).split(", ")
-            reactions = match.group(4).split(", ")
+            drugs = match.group(3).strip().strip(",").split(", ")
+            reactions = match.group(4).strip().strip(",").split(", ")
             return Icsr(
                 serious=serious, patientsex=patientsex, drugs=drugs, reactions=reactions
             )
