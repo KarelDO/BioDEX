@@ -21,3 +21,5 @@ rouge_score==0.1.2
 wandb==0.14.2
 tqdm
 peft==0.2.0
+bitsandbytes==0.38.1
+accelerate==0.18.0
