@@ -31,7 +31,6 @@ import numpy as np
 from datasets import load_dataset, load_from_disk
 from filelock import FileLock
 from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
-import wandb
 
 import transformers
 from transformers import (
@@ -810,28 +809,6 @@ def main():
         ]
         result["gen_len"] = np.mean(prediction_lens)
 
-        # # custom icsr metric
-        # (precision, recall, f1), fails = evaluate_icsr(decoded_preds, decoded_labels)
-        # parse_percent = 100 * (1 - (fails / len(decoded_labels)))
-
-        # result.update(
-        #     {
-        #         "icsr_precision": precision,
-        #         "icsr_recall": recall,
-        #         "icsr_f1": f1,
-        #         "icsr_parse_percent": parse_percent,
-        #     }
-        # )
-
-        # # get some examples to log
-        # example_preds = decoded_preds[:100]
-        # example_labels = decoded_labels[:100]
-        # example_table = wandb.Table(
-        #     columns=["prediction", "label"],
-        #     data=list(zip(example_preds, example_labels)),
-        # )
-        # # result.update({"examples": example_table})
-        # result.update({"examples": example_table})
         return result
 
     # Override the decoding parameters of Seq2SeqTrainer

@@ -5,12 +5,9 @@ from .report import Report
 
 import re
 
-string_re_with_newline = re.compile(
+pattern = re.compile(
     r"serious:[ ]?(.*) patientsex:[ ]?(.*) drugs:[ ]?(.*) reactions:[ ]?(.*)"
 )
-# string_re_without_newline = re.compile(
-#     r"serious: (.*) patientsex: (.*) drugs: (.*) reactions:[ ]?(.*)"
-# )
 
 
 def get_set_precision_and_recalls(l1, l2):
@@ -67,10 +64,8 @@ class Icsr(BaseModel):
 
     @classmethod
     def from_string(cls, string: str):
-        # match = string_re_without_newline.match(string)
-        # if not match:
         string = string.replace("\n", " ")
-        match = string_re_with_newline.match(string)
+        match = pattern.match(string)
 
         if match:
             serious = match.group(1)
