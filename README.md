@@ -25,11 +25,14 @@ Create the conda environment and install the code:
     pip install -r requirements.txt
     pip install .
 
+
+
+The report fields are described in detail [here](https://open.fda.gov/apis/drug/event/searchable-fields/).
+
 ## Load the raw resource
 ```python
 import datasets
 from src.utils import get_matches
-
 # load the raw dataset
 dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")
 
@@ -38,6 +41,9 @@ dataset = get_matches(dataset['train'])
 
 print(len(dataset)) # 65648
 ```
+
+## Dataset Creation
+All our dataset can be downloaded from HuggingFace.
 
 ## Analysis
 Notebooks to reproduce our dataset analysis are found in `analysis/`.
