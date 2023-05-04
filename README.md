@@ -25,6 +25,7 @@ Create the conda environment and install the code:
     pip install -r requirements.txt
     pip install .
 
+<<<<<<< HEAD
 
 
 The report fields are described in detail [here](https://open.fda.gov/apis/drug/event/searchable-fields/).
@@ -42,6 +43,12 @@ dataset = get_matches(dataset['train'])
 print(len(dataset)) # 65648
 ```
 
+=======
+## The BioDEX resource
+
+The report fields are described in detail [here](https://open.fda.gov/apis/drug/event/searchable-fields/).
+
+>>>>>>> 4f5704064827815d02e427e5397b2b25ebc19a99
 ## Dataset Creation
 All our dataset can be downloaded from HuggingFace.
 
