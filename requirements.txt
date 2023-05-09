@@ -23,3 +23,5 @@ tqdm
 peft==0.2.0
 bitsandbytes==0.38.1
 accelerate==0.18.0
+dsp-ml==0.1.4
+tiktoken==0.4.0

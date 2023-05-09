@@ -1,5 +1,5 @@
 data/
-
+**/cache/
 checkpoints/
 **/.lock/
 **/.lock

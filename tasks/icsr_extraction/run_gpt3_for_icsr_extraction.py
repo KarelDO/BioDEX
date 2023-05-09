@@ -11,7 +11,7 @@ import json
 from evaluate_icsr_extraction import evaluate_icsr
 
 
-def load_data(max_dev_samples: int) -> tuple:
+def load_data(max_dev_samples: int, fulltext: bool) -> tuple:
     dataset = datasets.load_dataset("FAERS-PubMed/BioDEX-ICSR")
 
     question = "What adverse drug event was described in the following context?"
@@ -26,7 +26,9 @@ def load_data(max_dev_samples: int) -> tuple:
     dev = [
         dsp.Example(
             question=question,
-            context=process_text(example["abstract"]),
+            context=process_text(
+                example["abstract"] if not fulltext else example["fulltext_processed"]
+            ),
             answer=process_text(example["target"]),
         )
         for example in dataset["validation"]
@@ -46,7 +48,7 @@ def process_text(text: str) -> str:
 
 
 def vanilla_LM_QA(
-    question: str, context: str, train: List[dsp.Example], n_demos: int, lm: dsp.GPT3
+    question: str, context: str, train: List[dsp.Example], n_demos: int, model_name: str
 ) -> str:
     demos = dsp.sample(train, k=n_demos)
     example = dsp.Example(question=question, context=context, demos=demos)
@@ -64,7 +66,9 @@ def vanilla_LM_QA(
             format=dsp.format_answers,
         ),
     )
-    example, completions = dsp.generate(qa_template)(example, stage="qa")
+    example, completions = dsp.generate(qa_template, model_name=model_name)(
+        example, stage="qa"
+    )
     return process_text(completions.answer)
 
 
@@ -85,9 +89,11 @@ def run(
     max_dev_samples: int,
     output_dir: str,
     model_name: str,
+    fulltext: bool,
+    dontsave: bool,
 ):
     # Load data
-    train, dev = load_data(max_dev_samples)
+    train, dev = load_data(max_dev_samples, fulltext)
 
     # Configure language model
     os.environ["DSP_NOTEBOOK_CACHEDIR"] = os.path.join(output_dir, "cache")
@@ -98,7 +104,7 @@ def run(
     for example in dev[:3]:
         print("----------")
         prediction = vanilla_LM_QA(
-            example.question, example.context, train, n_demos, lm
+            example.question, example.context, train, n_demos, model_name
         )
         answer = example.answer
 
@@ -131,12 +137,12 @@ def run(
     for example in tqdm(dev):
         try:
             prediction = vanilla_LM_QA(
-                example.question, example.context, train, n_demos, lm
+                example.question, example.context, train, n_demos, model_name
             )
         except:
             print("Warning: trying with fewer shots for context length")
             prediction = vanilla_LM_QA(
-                example.question, example.context, train, n_demos - 1, lm
+                example.question, example.context, train, n_demos - 1, model_name
             )
         prompt = lm.history[-1]["prompt"]
 
@@ -176,13 +182,16 @@ def run(
     next_run_number = get_run_number(output_dir)
     output_dir = os.path.join(output_dir, f"run{next_run_number:02d}")
 
+    if dontsave == True:
+        return
+
+    # Save predictions
     print("Logging to directory:")
     print(output_dir)
 
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    # Save predictions
     with open(os.path.join(output_dir, "generated_eval_predictions.txt"), "w") as f:
         for pred in predictions:
             f.write(pred + "\n")
@@ -235,6 +244,18 @@ if __name__ == "__main__":
         required=True,
         help="The name of the GPT3 model to use.",
     )
+    parser.add_argument(
+        "--fulltext",
+        type=bool,
+        default=False,
+        help="Whether to use (truncated) fulltext input for inference.",
+    )
+    parser.add_argument(
+        "--dontsave",
+        type=bool,
+        default=False,
+        help="If true, dont save any of the results.",
+    )
 
     args = parser.parse_args()
     print("Arguments:")
@@ -246,4 +267,6 @@ if __name__ == "__main__":
         max_dev_samples=args.max_dev_samples,
         output_dir=args.output_dir,
         model_name=args.model_name,
+        fulltext=args.fulltext,
+        dontsave=args.dontsave,
     )
