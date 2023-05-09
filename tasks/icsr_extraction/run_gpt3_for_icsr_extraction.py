@@ -230,7 +230,7 @@ if __name__ == "__main__":
         "--max_dev_samples",
         type=int,
         default=None,
-        help="The maximum number of samples to use from the development set.",
+        help="The maximum number of samples to use from the developmen`t set.",
     )
     parser.add_argument(
         "--output_dir",
