@@ -7,6 +7,7 @@ from src import Icsr
 import dsp
 import glob
 import json
+import tiktoken
 
 from evaluate_icsr_extraction import evaluate_icsr
 
@@ -100,6 +101,9 @@ def run(
     lm = dsp.GPT3(model=model_name, **{"max_tokens": max_tokens})
     dsp.settings.configure(lm=lm)
 
+    # Load tokenizer
+    enc = tiktoken.encoding_for_model(model_name)
+
     # Logging first three examples
     for example in dev[:3]:
         print("----------")
@@ -133,6 +137,7 @@ def run(
     # Evaluate
     prompts, predictions, labels = [], [], []
     prompt_tokens, completion_tokens, total_tokens = [], [], []
+    demo_context_tokens, inference_context_tokens = [], []
 
     for example in tqdm(dev):
         try:
@@ -146,15 +151,28 @@ def run(
             )
         prompt = lm.history[-1]["prompt"]
 
+        # save predictions
         predictions.append(prediction)
         prompts.append(prompt)
         labels.append(example.answer)
 
+        # save token lengths
         completion_tokens.append(
             lm.history[-1]["response"]["usage"]["completion_tokens"]
         )
         prompt_tokens.append(lm.history[-1]["response"]["usage"]["prompt_tokens"])
         total_tokens.append(lm.history[-1]["response"]["usage"]["total_tokens"])
+
+        # get avg context length for demo and and inference
+        inference_context = prompt.strip("\nAnswer:").split("Context:")[-1]
+        demo_contexts = prompt.strip("\nAnswer:").split("Context:")[-1 - n_demos : -1]
+        demo_contexts = [c.split("\nAnswer")[0] for c in demo_contexts]
+
+        inference_context = len(enc.encode(inference_context))
+        demo_contexts = [len(enc.encode(c)) for c in demo_contexts]
+
+        inference_context_tokens.append(inference_context)
+        demo_context_tokens.extend(demo_contexts)
 
     (precision, recall, f1), fails = evaluate_icsr(predictions, labels)
     parse_percent = 100 * (1 - (fails / len(predictions)))
@@ -171,6 +189,12 @@ def run(
         "predict_completion_token_max": max(completion_tokens),
         "predict_prompt_tokens_max": max(prompt_tokens),
         "predict_total_tokens_max": max(total_tokens),
+        "predict_inference_context_tokens_avg": sum(inference_context_tokens)
+        / len(inference_context_tokens),
+        "predict_demo_context_tokens_avg": sum(demo_context_tokens)
+        / len(demo_context_tokens),
+        "predict_inference_context_tokens_max": max(inference_context_tokens),
+        "predict_demo_context_tokens_max": max(demo_context_tokens),
     }
 
     print("Results:")
