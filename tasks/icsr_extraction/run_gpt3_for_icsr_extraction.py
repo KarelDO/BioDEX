@@ -214,7 +214,7 @@ def run(
     print(output_dir)
 
     if not os.path.isdir(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir)
 
     with open(os.path.join(output_dir, "generated_eval_predictions.txt"), "w") as f:
         for pred in predictions:
