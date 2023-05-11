@@ -23,5 +23,6 @@ tqdm
 peft==0.2.0
 bitsandbytes==0.38.1
 accelerate==0.18.0
-dsp-ml==0.1.4
+# dsp-ml==0.1.4
+dsp-ml @ git+https://github.com/stanfordnlp/dsp@6bed48072bceea96e4de8c0412a34e066da5f277
 tiktoken==0.4.0

@@ -49,7 +49,7 @@ def process_text(text: str) -> str:
 
 
 def vanilla_LM_QA(
-    question: str, context: str, train: List[dsp.Example], n_demos: int, model_name: str
+    question: str, context: str, train: List[dsp.Example], n_demos: int, model_name: str, max_prompt_length: int, max_gen_length: int
 ) -> str:
     demos = dsp.sample(train, k=n_demos)
     example = dsp.Example(question=question, context=context, demos=demos)
@@ -67,7 +67,7 @@ def vanilla_LM_QA(
             format=dsp.format_answers,
         ),
     )
-    example, completions = dsp.generate(qa_template, model_name=model_name)(
+    example, completions = dsp.generate(qa_template, model_name, max_prompt_length, max_gen_length)(
         example, stage="qa"
     )
     return process_text(completions.answer)
@@ -86,10 +86,12 @@ def get_run_number(output_dir):
 
 def run(
     max_tokens: int,
+    max_prompt_length: int,
     n_demos: int,
     max_dev_samples: int,
     output_dir: str,
     model_name: str,
+    chat_model: bool,
     fulltext: bool,
     dontsave: bool,
 ):
@@ -98,7 +100,8 @@ def run(
 
     # Configure language model
     os.environ["DSP_NOTEBOOK_CACHEDIR"] = os.path.join(output_dir, "cache")
-    lm = dsp.GPT3(model=model_name, **{"max_tokens": max_tokens})
+    model_type = 'chat' if chat_model else 'text'
+    lm = dsp.GPT3(model=model_name, model_type=model_type, **{"max_tokens": max_tokens})
     dsp.settings.configure(lm=lm)
 
     # Load tokenizer
@@ -108,7 +111,7 @@ def run(
     for example in dev[:3]:
         print("----------")
         prediction = vanilla_LM_QA(
-            example.question, example.context, train, n_demos, model_name
+            example.question, example.context, train, n_demos, model_name, max_prompt_length, max_tokens 
         )
         answer = example.answer
 
@@ -140,15 +143,9 @@ def run(
     demo_context_tokens, inference_context_tokens = [], []
 
     for example in tqdm(dev):
-        try:
-            prediction = vanilla_LM_QA(
-                example.question, example.context, train, n_demos, model_name
-            )
-        except:
-            print("Warning: trying with fewer shots for context length")
-            prediction = vanilla_LM_QA(
-                example.question, example.context, train, n_demos - 1, model_name
-            )
+        prediction = vanilla_LM_QA(
+            example.question, example.context, train, n_demos, model_name,max_prompt_length, max_tokens
+        )
         prompt = lm.history[-1]["prompt"]
 
         # save predictions
@@ -245,6 +242,12 @@ if __name__ == "__main__":
         help="The maximum number of tokens to generate with GPT3.",
     )
     parser.add_argument(
+        "--max_prompt_length",
+        type=int,
+        default=4096,
+        help="The maximum number of tokens that fit in the models context window.",
+    )
+    parser.add_argument(
         "--n_demos",
         type=int,
         default=7,
@@ -269,6 +272,12 @@ if __name__ == "__main__":
         help="The name of the GPT3 model to use.",
     )
     parser.add_argument(
+        "--chat_model",
+        type=bool,
+        default=False,
+        help="If true, use the OpanAI chat API instead of the text api.",
+    )
+    parser.add_argument(
         "--fulltext",
         type=bool,
         default=False,
@@ -287,10 +296,12 @@ if __name__ == "__main__":
 
     run(
         max_tokens=args.max_tokens,
+        max_prompt_length=args.max_prompt_length,
         n_demos=args.n_demos,
         max_dev_samples=args.max_dev_samples,
         output_dir=args.output_dir,
         model_name=args.model_name,
+        chat_model = args.chat_model,
         fulltext=args.fulltext,
         dontsave=args.dontsave,
     )
