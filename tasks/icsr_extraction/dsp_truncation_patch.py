@@ -94,18 +94,13 @@ def _generate(
         # NOTE: Karel's code start
         prompt_without_answer = prompt.strip("\nAnswer:")
         prompt_tokenized = enc.encode(prompt_without_answer)
-        print(max_prompt_length)
-        print(max_gen_length)
-        print(len(prompt_tokenized))
         chat_penalty = 8 if dsp.settings.lm.model_type == "chat" else 0
-        print(chat_penalty)
         prompt_truncated = prompt_tokenized[
             : max_prompt_length
             - len(enc.encode("\nAnswer:"))
             - max_gen_length
             - chat_penalty
         ]
-        print(len(prompt_truncated))
         prompt_truncated_with_answer = enc.decode(prompt_truncated) + "\nAnswer:"
         prompt = prompt_truncated_with_answer
         # NOTE: Karel's code end
