@@ -49,7 +49,13 @@ def process_text(text: str) -> str:
 
 
 def vanilla_LM_QA(
-    question: str, context: str, train: List[dsp.Example], n_demos: int, model_name: str, max_prompt_length: int, max_gen_length: int
+    question: str,
+    context: str,
+    train: List[dsp.Example],
+    n_demos: int,
+    model_name: str,
+    max_prompt_length: int,
+    max_gen_length: int,
 ) -> str:
     demos = dsp.sample(train, k=n_demos)
     example = dsp.Example(question=question, context=context, demos=demos)
@@ -67,9 +73,9 @@ def vanilla_LM_QA(
             format=dsp.format_answers,
         ),
     )
-    example, completions = dsp.generate(qa_template, model_name, max_prompt_length, max_gen_length)(
-        example, stage="qa"
-    )
+    example, completions = dsp.generate(
+        qa_template, model_name, max_prompt_length, max_gen_length
+    )(example, stage="qa")
     return process_text(completions.answer)
 
 
@@ -100,7 +106,7 @@ def run(
 
     # Configure language model
     os.environ["DSP_NOTEBOOK_CACHEDIR"] = os.path.join(output_dir, "cache")
-    model_type = 'chat' if chat_model else 'text'
+    model_type = "chat" if chat_model else "text"
     lm = dsp.GPT3(model=model_name, model_type=model_type, **{"max_tokens": max_tokens})
     dsp.settings.configure(lm=lm)
 
@@ -111,7 +117,13 @@ def run(
     for example in dev[:3]:
         print("----------")
         prediction = vanilla_LM_QA(
-            example.question, example.context, train, n_demos, model_name, max_prompt_length, max_tokens 
+            example.question,
+            example.context,
+            train,
+            n_demos,
+            model_name,
+            max_prompt_length,
+            max_tokens,
         )
         answer = example.answer
 
@@ -144,7 +156,13 @@ def run(
 
     for example in tqdm(dev):
         prediction = vanilla_LM_QA(
-            example.question, example.context, train, n_demos, model_name,max_prompt_length, max_tokens
+            example.question,
+            example.context,
+            train,
+            n_demos,
+            model_name,
+            max_prompt_length,
+            max_tokens,
         )
         prompt = lm.history[-1]["prompt"]
 
@@ -301,7 +319,7 @@ if __name__ == "__main__":
         max_dev_samples=args.max_dev_samples,
         output_dir=args.output_dir,
         model_name=args.model_name,
-        chat_model = args.chat_model,
+        chat_model=args.chat_model,
         fulltext=args.fulltext,
         dontsave=args.dontsave,
     )

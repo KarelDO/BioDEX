@@ -10,7 +10,9 @@ from dsp.primitives.demonstrate import Example
 
 # NOTE: Karel's code start
 import tiktoken
+
 # NOTE: Karel's code end
+
 
 class Completions:
     """A state object that holds the valid LM completions for a given Template."""
@@ -48,17 +50,23 @@ class Completions:
         assert False, name
 
 
-def generate(template: Template, model_name, max_prompt_length, max_gen_length, **kwargs) -> Callable:
+def generate(
+    template: Template, model_name, max_prompt_length, max_gen_length, **kwargs
+) -> Callable:
     """Returns a callable function that generates completions for a given example using the provided template."""
     if hasattr(dsp.settings, "inspect"):
         inspector = dsp.settings.inspect
         _generate = inspector.inspect_func(dsp.predict._generate)
         return _generate(template, **kwargs)
     else:
-        return dsp.predict._generate(template, model_name, max_prompt_length, max_gen_length, **kwargs)
+        return dsp.predict._generate(
+            template, model_name, max_prompt_length, max_gen_length, **kwargs
+        )
 
 
-def _generate(template: Template, model_name, max_prompt_length, max_gen_length, **kwargs) -> Callable:
+def _generate(
+    template: Template, model_name, max_prompt_length, max_gen_length, **kwargs
+) -> Callable:
     """Returns a callable function that generates completions for a given example using the provided template."""
     if not dsp.settings.lm:
         raise AssertionError("No LM is loaded.")
@@ -84,10 +92,21 @@ def _generate(template: Template, model_name, max_prompt_length, max_gen_length,
         prompt = template(example)
 
         # NOTE: Karel's code start
-        prompt_without_answer = prompt.strip('\nAnswer:')
+        prompt_without_answer = prompt.strip("\nAnswer:")
         prompt_tokenized = enc.encode(prompt_without_answer)
-        prompt_truncated = prompt_tokenized[:max_prompt_length - len(enc.encode('\nAnswer:')) - max_gen_length]
-        prompt_truncated_with_answer = enc.decode(prompt_truncated) + '\nAnswer:'
+        print(max_prompt_length)
+        print(max_gen_length)
+        print(len(prompt_tokenized))
+        chat_penalty = 8 if dsp.settings.lm.model_type == "chat" else 0
+        print(chat_penalty)
+        prompt_truncated = prompt_tokenized[
+            : max_prompt_length
+            - len(enc.encode("\nAnswer:"))
+            - max_gen_length
+            - chat_penalty
+        ]
+        print(len(prompt_truncated))
+        prompt_truncated_with_answer = enc.decode(prompt_truncated) + "\nAnswer:"
         prompt = prompt_truncated_with_answer
         # NOTE: Karel's code end
 
