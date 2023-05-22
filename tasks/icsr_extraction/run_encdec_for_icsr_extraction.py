@@ -55,7 +55,7 @@ from transformers.utils import (
 )
 from transformers.utils.versions import require_version
 
-from evaluate_icsr_extraction import evaluate_icsr_from_dataset
+from src.evaluate_icsr_extraction import evaluate_icsr_from_dataset
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
