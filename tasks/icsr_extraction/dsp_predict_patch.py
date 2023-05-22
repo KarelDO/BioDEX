@@ -8,10 +8,10 @@ from dsp.templates.template_v3 import Template
 from dsp.primitives.demonstrate import Example
 
 
-# NOTE: Karel's code start
+# NOTE: Truncation code start
 import tiktoken
 
-# NOTE: Karel's code end
+# NOTE: Truncation code end
 
 
 class Completions:
@@ -73,9 +73,9 @@ def _generate(
 
     generator = dsp.settings.lm
 
-    # NOTE: Karel's code start
+    # NOTE: Truncation code start
     enc = tiktoken.encoding_for_model(model_name)
-    # NOTE: Karel's code end
+    # NOTE: Truncation code end
 
     def do_generate(
         example: Example, stage: str, max_depth: int = 2, original_example=None
@@ -91,7 +91,7 @@ def _generate(
         # Generate and extract the fields.
         prompt = template(example)
 
-        # NOTE: Karel's code start
+        # NOTE: Truncation code start
         prompt_without_answer = prompt.strip("\nAnswer:")
         prompt_tokenized = enc.encode(prompt_without_answer)
         chat_penalty = 8 if dsp.settings.lm.model_type == "chat" else 0
@@ -103,7 +103,7 @@ def _generate(
         ]
         prompt_truncated_with_answer = enc.decode(prompt_truncated) + "\nAnswer:"
         prompt = prompt_truncated_with_answer
-        # NOTE: Karel's code end
+        # NOTE: Truncation code end
 
         completions: list[dict[str, Any]] = generator(prompt, **kwargs)
         completions: list[Example] = [template.extract(example, p) for p in completions]
