@@ -1,7 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, validator
 
-from xml.etree import ElementTree as ET
 import xmltodict
 
 # from linking.utils.preprocessing_regex import faers_process_title
