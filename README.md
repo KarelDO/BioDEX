@@ -95,8 +95,8 @@ print(len(dataset['test']))         # 3,628
 
 example = dataset['train'][0]
 
-print(example['fulltext_processed'][:1000], '...')
-print(example['target'])
+print(example['fulltext_processed'][:1000], '...') # TITLE: # SARS-CoV-2-related ARDS in a maintenance hemodialysis patient ...
+print(example['target']) # serious: 1 patientsex: 1 drugs: ACETAMINOPHEN, ASPIRIN ...
 ```
 
 <!-- ## TODO Use our Report-Extraction model
