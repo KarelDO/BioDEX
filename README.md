@@ -114,36 +114,35 @@ output = model.predict(**input)
 
 ``` -->
 
-## This repository
-### Analysis
-Notebooks to reproduce our dataset analysis are found in `analysis/`.
+## Overview of this repository
+This repository is structured as follows:
+- `analysis/` contains the data and notebooks to reproduce all plots in the paper.
+- `src/` contains all code to represent the data objects and calculate the metrics.
+- `data_creation/` contains the code to create the Report-Extraction dataset starting from the raw resource. Code to create the raw resource from scratch from will be released soon.
+- `task/icsr_extraction/` contains the code to train and evaluate models for the Report-Extraction task.
 
-## Tasks
-BioDEX supports training models under different task formats. For now, we focus on the `icsr_extraction` task. More tasks are coming soon.
+### The Report-Extraction Task
+All code for this task is located in `task/icsr_extraction/`.
 
-### ICSR-Extraction
-Given the article abstract or full-text, the goal is to predict a coarse representation of the corresponding ICSR. This representation includes the seriousness of the event, the sex of the patient, an alphabetized list of drugs taken and an alphabetized list of reactions experienced. This is modelled as a sequence-to-sequence task. The dataset is on HuggingFace and can be used directly with conventional seq2seq pipelines. 
-
-Code to train and evaluate on the ICSR-Extraction task is located in `tasks/icsr_extraction`. To train, run either of the following code-blocks depending on your Transformer architecture.
-
-```
-# train decoder-only models (e.g. GPT2)
-$ cd tasks/icsr_extraction
-$ python run_decoder_for_icsr_extraction.py `python ../config_to_cmd.py config_gpt2.yaml`
-```
+Train an encoder-decoder model:
 ```
 # train encoder-decoder models (e.g. T5)
 $ cd tasks/icsr_extraction
 $ python run_encdec_for_icsr_extraction.py `python ../config_to_cmd.py config_t5.yaml`
 ```
+
+Train a decoder-only model (still a work in progress):
+```
+# train decoder-only models (e.g. GPT2)
+$ cd tasks/icsr_extraction
+$ python run_decoder_for_icsr_extraction.py `python ../config_to_cmd.py config_gpt2.yaml`
+```
+
 You can either pass command line arguments directly or save them in a config and parse the config to command line by running `` `python ../config_to_cmd.py config_t5.yaml` ``. Don't forget the backticks to first execute this command. Set the `text_column` field to either `abstract` or `fulltext_processed` to train a model on only the abstract or the entire paper respectively.
 
-```
-# evaluate your model
-$ python evaluate_icsr_extraction.py ../../checkpoints/<your-model-folder>/generated_predictions.txt FAERS-PubMed/BioDEX-ICSR
-```
 
-More about our evaluation procedure in the paper.
+
+<!-- More about our evaluation procedure in the paper.
 
 Example input:
 ```
@@ -160,16 +159,16 @@ serious: yes
 patientsex: female 
 drugs: AMLODIPINE BESYLATE, AZATHIOPRINE, HYDROXYCHLOROQUINE, PREDNISOLONE, SILDENAFIL 
 reactions: Bone marrow toxicity, Cytomegalovirus infection, Cytomegalovirus mucocutaneous ulcer, Febrile neutropenia, Leukoplakia, Odynophagia, Oropharyngeal candidiasis, Pancytopenia, Product use issue, Red blood cell poikilocytes present, Vitamin D deficiency
-```
+``` -->
 
-## Dataset Creation
+<!-- ## Dataset Creation
 All our datasets are available on the HuggingFace hub. We are in the process of releasing all code to reproduce these datasets. 
 
 | Task            | HuggingFace dataset                                                                                                         | Leaderboard   | Code to reproduce dataset         |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------|---------------|-----------------------------------|
 | raw resource    | [FAERS-PubMed/raw_dataset](https://huggingface.co/datasets/FAERS-PubMed/raw_dataset)                                        | /             | `data_creation/raw` (coming soon) |
 | ICSR-Extraction | [FAERS-PubMed/BioDEX-ICSR](https://huggingface.co/datasets/FAERS-PubMed/BioDEX-ICSR/viewer/FAERS-PubMed--BioDEX-ICSR/train) | (coming soon) | `data_creation/icsr_extraction`   |
-| ICSR-QA         | (coming soon)                                                                                                               | (coming soon) | (coming soon)                     |
+| ICSR-QA         | (coming soon)                                                                                                               | (coming soon) | (coming soon)                     | -->
 
 ## Limitations
 See section 9 of the [BioDEX paper](todo) for limitations and ethical considerations.
