@@ -1,21 +1,22 @@
-# BioDEX: a dataset for Biomedical Drug Event Extraction
+# BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance.
 
-BioDEX is a raw resource for drug safety monitoring that bundles full-text and abstract-only PubMed papers with Individual Case Safety Reports (ICSRs). These ICSRs contain structured information about the Adverse Drug Events (ADEs) described in the papers, and are produced by medical experts.
+This is the official repository for the [BioDEX paper](todo).
 
-We hope that our resource paves the way for (semi-)automated ICSR reporting systems, which one day could aid humans to perform drug safety monitoring. Additionally, we believe our task is a good resource to train and evaluate the biomedical capabilities of Large Language Models.
+BioDEX is a raw resource for drug safety monitoring that bundles full-text and abstract-only PubMed papers with drug safety reports. These reports contain structured information about an Adverse Drug Events (ADEs) described in the papers, and are produced by medical experts in real-world settings.
 
+BioDEX contains 19k full-text papers, 65k abstracts, and over 256k associated drug-safety reports.
 
+<!-- We hope that our resource paves the way for (semi-)automated ICSR reporting systems, which one day could aid humans to perform drug safety monitoring. Additionally, we believe our task is a good resource to train and evaluate the biomedical capabilities of Large Language Models. -->
+
+<!-- 
 BioDEX is created by combining the following resources:
 - [PubMed Medline](https://www.nlm.nih.gov/bsd/difference.html): Distribution of PubMed article metadata and abstracts.
 - [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/): Distribution of full-text PubMed articles.
-- [FAERS](https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers): Distribution of Individual Case Sefety Reports.
+- [FAERS](https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers): Distribution of Individual Case Sefety Reports. -->
 
-A preliminary write-up including initial results is included in `supplementary_material/`. A description of the dataset fields is given in `supplementary_material/BioDEX_Dataset_Card.pdf`.
+<!-- A preliminary write-up including initial results is included in `supplementary_material/`. A description of the dataset fields is given in `supplementary_material/BioDEX_Dataset_Card.pdf`. -->
 
-## Disclaimer
-We have only begun to explore our dataset and the capabilities and limitations of models trained on them. Understanding these limitations is especially important in a domain like medicine. **Therefore, we strongly recommend against using models trained on this resource in production for ICSR reporting.**
 
-BioDEX is a work in progress and is not yet published. Everything is subject to change.
 
 ## Installation
 Create the conda environment and install the code: 
@@ -28,18 +29,73 @@ Create the conda environment and install the code:
 ## Load the raw resource
 ```python
 import datasets
+
+# load the raw dataset
+dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+
+print(len(dataset)) # 65,648
+
+# investigate an example
+article = dataset[0].article
+report = dataset[0].reports[0]
+
+```
+
+Optional, use our code to parse the raw resource into Python objects for easy manipulation
+```python
+import datasets
 from src.utils import get_matches
 
 # load the raw dataset
-dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")
+dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+dataset = get_matches(dataset)
 
-# (optional) parse the dataset into custom Python objects for easy manipulation
-dataset = get_matches(dataset['train'])
+print(len(dataset)) # 65,648
 
-print(len(dataset)) # 65648
+# investigate an example
+article = dataset[0].article
+report = dataset[0].reports[0]
+
+print(article.title)
+print(article.abstract)
+print(article.fulltext)
+print(article.fulltext_license)
+
+print(report.title)
+print(report.patient.patientsex)
+print(report.patient.drugs[0].activesubstance.activesubstancename)
+
 ```
 
-## Analysis
+## Load the Report-Extraction dataset
+```python
+import datasets
+
+# load the raw dataset
+dataset = datasets.load_dataset("FAERS-PubMed/BioDEX-ICSR")
+
+print(len(dataset['train']))        # 9,624
+print(len(dataset['validation']))   # 2,407
+print(len(dataset['test']))         # 3,628
+```
+
+## Use our Report-Extraction model
+```python
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+model = AutoModelForSeq2SeqLM.from_pretrained("FAERS-PubMed/flan-t5-large-report-extraction")
+tokenizer = AutoTokenizer.from_pretrained("FAERS-PubMed/flan-t5-large-report-extraction")
+
+# TODO
+input = """TODO"""
+input = tokenizer.encoder(input)
+
+output = model.predict(**input)
+
+```
+
+## This repository
+### Analysis
 Notebooks to reproduce our dataset analysis are found in `analysis/`.
 
 ## Tasks
@@ -95,6 +151,8 @@ All our datasets are available on the HuggingFace hub. We are in the process of 
 | ICSR-Extraction | [FAERS-PubMed/BioDEX-ICSR](https://huggingface.co/datasets/FAERS-PubMed/BioDEX-ICSR/viewer/FAERS-PubMed--BioDEX-ICSR/train) | (coming soon) | `data_creation/icsr_extraction`   |
 | ICSR-QA         | (coming soon)                                                                                                               | (coming soon) | (coming soon)                     |
 
+## Limitations
+See section 9 of the [BioDEX paper](todo) for limitations and ethical considerations.
 
 ## Contact
 Open an issue on this GitHub page or email `karel[dot]doosterlinck[at]ugent[dot].be` and preferrably include "[BioDEX]" in the subject.
