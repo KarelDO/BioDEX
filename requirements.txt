@@ -24,3 +24,4 @@ peft==0.2.0
 bitsandbytes==0.38.1
 accelerate==0.18.0
 pylatex==1.4.1
+scikit-learn==1.2.2 
