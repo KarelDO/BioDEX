@@ -36,9 +36,21 @@ dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
 print(len(dataset)) # 65,648
 
 # investigate an example
-article = dataset[0].article
-report = dataset[0].reports[0]
+article = dataset[1]['article']
+report = dataset[1]['reports'][0]
 
+print(article['title'])    # Case Report: Perioperative Kounis Syndrome in an Adolescent With Congenital Glaucoma.
+print(article['abstract']) # A 12-year-old male patient suffering from congenital glaucoma developed bradycardia, ...
+print(article['fulltext']) # ...
+print(article['fulltext_license']) # CC BY
+
+print(report['patient']['patientsex']) # 1
+print(report['patient']['drug'][0]['activesubstance']['activesubstancename']) # ATROPINE SULFATE
+print(report['patient']['drug'][0]['drugadministrationroute']) # 040
+print(report['patient']['drug'][1]['activesubstance']['activesubstancename']) # MIDAZOLAM
+print(report['patient']['drug'][1]['drugindication']) # Anaesthesia
+print(report['patient']['reaction'][0]['reactionmeddrapt'])  # Kounis syndrome
+print(report['patient']['reaction'][1]['reactionmeddrapt'])  # Hypersensitivity
 ```
 
 Optional, use our code to parse the raw resource into Python objects for easy manipulation
@@ -53,33 +65,41 @@ dataset = get_matches(dataset)
 print(len(dataset)) # 65,648
 
 # investigate an example
-article = dataset[0].article
-report = dataset[0].reports[0]
+article = dataset[1].article
+report = dataset[1].reports[0]
 
-print(article.title)
-print(article.abstract)
-print(article.fulltext)
-print(article.fulltext_license)
+print(article.title)    # Case Report: Perioperative Kounis Syndrome in an Adolescent With Congenital Glaucoma.
+print(article.abstract) # A 12-year-old male patient suffering from congenital glaucoma developed bradycardia, ...
+print(article.fulltext) # ...
+print(article.fulltext_license) # CC BY
 
-print(report.title)
-print(report.patient.patientsex)
-print(report.patient.drugs[0].activesubstance.activesubstancename)
-
+print(report.patient.patientsex) # 1
+print(report.patient.drug[0].activesubstance.activesubstancename) # ATROPINE SULFATE
+print(report.patient.drug[0].drugadministrationroute) # 040
+print(report.patient.drug[1].activesubstance.activesubstancename) # MIDAZOLAM
+print(report.patient.drug[1].drugindication) # Anaesthesia
+print(report.patient.reaction[0].reactionmeddrapt)  # Kounis syndrome
+print(report.patient.reaction[1].reactionmeddrapt)  # Hypersensitivity
 ```
 
 ## Load the Report-Extraction dataset
 ```python
 import datasets
 
-# load the raw dataset
+# load the report-extraction dataset
 dataset = datasets.load_dataset("FAERS-PubMed/BioDEX-ICSR")
 
 print(len(dataset['train']))        # 9,624
 print(len(dataset['validation']))   # 2,407
 print(len(dataset['test']))         # 3,628
+
+example = dataset['train'][0]
+
+print(example['fulltext_processed'][:1000], '...')
+print(example['target'])
 ```
 
-## Use our Report-Extraction model
+<!-- ## TODO Use our Report-Extraction model
 ```python
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
@@ -92,7 +112,7 @@ input = tokenizer.encoder(input)
 
 output = model.predict(**input)
 
-```
+``` -->
 
 ## This repository
 ### Analysis
