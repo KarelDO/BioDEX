@@ -13,7 +13,7 @@ from src.evaluate_icsr_extraction import evaluate_icsr
 
 
 def load_data(max_dev_samples: int, fulltext: bool) -> tuple:
-    dataset = datasets.load_dataset("FAERS-PubMed/BioDEX-ICSR")
+    dataset = datasets.load_dataset("BioDEX/BioDEX-ICSR")
 
     question = "What adverse drug event was described in the following context?"
     train = [

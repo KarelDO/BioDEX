@@ -6,7 +6,7 @@ overwrite_cache: False
 seed: 42
 
 ############ Data and model ############
-dataset_name: FAERS-PubMed/BioDEX-ICSR
+dataset_name: BioDEX/BioDEX-ICSR
 text_column: fulltext_processed
 summary_column: target
 # source_prefix: 

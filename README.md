@@ -4,8 +4,9 @@
 
 # BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance.
 
-[![Code License]()]()
-[![Data License]()]()
+<!-- [![Code License]()]()
+[![Data License]()]() -->
+<!-- [![HuggingFace](https://huggingface.co/datasets/huggingface/badges/raw/main/powered-by-huggingface-light.svg)]() -->
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 This is the official repository for the [BioDEX paper](todo).
@@ -35,7 +36,7 @@ Create the conda environment and install the code:
 import datasets
 
 # load the raw dataset
-dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+dataset = datasets.load_dataset("BioDEX/raw_dataset")['train']
 
 print(len(dataset)) # 65,648
 
@@ -63,7 +64,7 @@ import datasets
 from src.utils import get_matches
 
 # load the raw dataset
-dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+dataset = datasets.load_dataset("BioDEX/raw_dataset")['train']
 dataset = get_matches(dataset)
 
 print(len(dataset)) # 65,648
@@ -91,7 +92,7 @@ print(report.patient.reaction[1].reactionmeddrapt)  # Hypersensitivity
 import datasets
 
 # load the report-extraction dataset
-dataset = datasets.load_dataset("FAERS-PubMed/BioDEX-ICSR")
+dataset = datasets.load_dataset("BioDEX/BioDEX-ICSR")
 
 print(len(dataset['train']))        # 9,624
 print(len(dataset['validation']))   # 2,407
@@ -107,8 +108,8 @@ print(example['target']) # serious: 1 patientsex: 1 drugs: ACETAMINOPHEN, ASPIRI
 ```python
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-model = AutoModelForSeq2SeqLM.from_pretrained("FAERS-PubMed/flan-t5-large-report-extraction")
-tokenizer = AutoTokenizer.from_pretrained("FAERS-PubMed/flan-t5-large-report-extraction")
+model = AutoModelForSeq2SeqLM.from_pretrained("BioDEX/flan-t5-large-report-extraction")
+tokenizer = AutoTokenizer.from_pretrained("BioDEX/flan-t5-large-report-extraction")
 
 # TODO
 input = """TODO"""
@@ -133,7 +134,7 @@ cd tasks/icsr_extraction
 python run_encdec_for_icsr_extraction.py \
     --overwrite_cache False \
     --seed 42 \
-    --dataset_name FAERS-PubMed/BioDEX-ICSR \
+    --dataset_name BioDEX/BioDEX-ICSR \
     --text_column fulltext_processed \
     --summary_column target \
     --model_name_or_path google/flan-t5-large \
@@ -177,10 +178,10 @@ cd tasks/icsr_extraction
 python run_encdec_for_icsr_extraction.py \
     --overwrite_cache False \
     --seed 42 \
-    --dataset_name FAERS-PubMed/BioDEX-ICSR \
+    --dataset_name BioDEX/BioDEX-ICSR \
     --text_column fulltext_processed \
     --summary_column target \
-    --model_name_or_path FAERS-PubMed/flan-t5-large-report-extraction \
+    --model_name_or_path BioDEX/flan-t5-large-report-extraction \
     --output_dir ../../checkpoints/flan-t5-large-report-extraction \
     --max_source_length 2048 \
     --max_target_length 256 \
@@ -268,7 +269,7 @@ Filter the raw resource to only include fulltext papers with a commercial licens
 import datasets
 
 # load the raw dataset
-dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+dataset = datasets.load_dataset("BioDEX/raw_dataset")['train']
 print(len(dataset)) # 65,648
 
 # remove all fulltext papers with no commercial license
