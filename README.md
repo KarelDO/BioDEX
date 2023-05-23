@@ -142,7 +142,7 @@ output = tokenizer.batch_decode(output_encoded, skip_special_tokens=True)
 output = output[0]
 
 print(output) # serious: 1 patientsex: 2 drugs: AMLODIPINE BESYLATE, LISINOPRIL reactions: Intentional overdose, Metabolic acidosis, Shock``` -->
-
+```
 
 ## Train and evaluate Report-Extraction models
 All code for this task is located in `task/icsr_extraction/`.
