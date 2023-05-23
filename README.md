@@ -120,23 +120,30 @@ print(example['fulltext_processed'][:1000], '...') # TITLE: # SARS-CoV-2-related
 print(example['target']) # serious: 1 patientsex: 1 drugs: ACETAMINOPHEN, ASPIRIN ...
 ```
 
-<!-- ## TODO Use our Report-Extraction model
+## Use our fine-tuned Report-Extraction model
 ```python
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoTokenizer, T5ForConditionalGeneration
+import datasets
 
-model = AutoModelForSeq2SeqLM.from_pretrained("BioDEX/flan-t5-large-report-extraction")
-tokenizer = AutoTokenizer.from_pretrained("BioDEX/flan-t5-large-report-extraction")
+# load the report-extraction dataset
+dataset = datasets.load_dataset("BioDEX/BioDEX-ICSR")
 
-# TODO
-input = """TODO"""
-input = tokenizer.encoder(input)
+# load the model
+model_path = "BioDEX/flan-t5-large-report-extraction"
+model = T5ForConditionalGeneration.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-output = model.predict(**input)
+# get an input and encode it
+input = dataset['validation'][1]['fulltext_processed']
+input_encoded = tokenizer(input, max_length=2048, truncation=True, padding="max_length", return_tensors='pt')
 
-``` -->
+# forward pass
+output_encoded = model.generate(**input_encoded, max_length=256)
 
-<!-- ## TODO: evaluate a prediction -->
+output = tokenizer.batch_decode(output_encoded, skip_special_tokens=True)
+output = output[0]
 
+print(output) # serious: 1 patientsex: 2 drugs: AMLODIPINE BESYLATE, LISINOPRIL reactions: Intentional overdose, Metabolic acidosis, Shock``` -->
 
 
 ## Train and evaluate Report-Extraction models
