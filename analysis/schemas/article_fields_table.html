@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>BioDEX Article Fields</title>
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+th:nth-child(1), td:nth-child(1) {
+    width: 40%;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 60%;
+}
+
+.title {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+<div class="title">BioDEX Article Fields</div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>fields</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>title</td>
+      <td>Title of the article</td>
+    </tr>
+    <tr>
+      <td>pmid</td>
+      <td>PubMed ID</td>
+    </tr>
+    <tr>
+      <td>issue</td>
+      <td>The Issue of the journal</td>
+    </tr>
+    <tr>
+      <td>pages</td>
+      <td>Pages of the article in the journal publication</td>
+    </tr>
+    <tr>
+      <td>abstract</td>
+      <td>Abstract of the article</td>
+    </tr>
+    <tr>
+      <td>fulltext</td>
+      <td>The full text associated with the article from the PubMed Central Open Access Subset, if available</td>
+    </tr>
+    <tr>
+      <td>fulltext_license</td>
+      <td>The license associated with the full text paper from the PubMed Central Open Access Subset, if available</td>
+    </tr>
+    <tr>
+      <td>journal</td>
+      <td>Journal of the given paper</td>
+    </tr>
+    <tr>
+      <td>authors</td>
+      <td>Authors, each separated by ';'</td>
+    </tr>
+    <tr>
+      <td>affiliations</td>
+      <td>The affiliations of the authors</td>
+    </tr>
+    <tr>
+      <td>pubdate</td>
+      <td>Publication date. Defaults to year information only.</td>
+    </tr>
+    <tr>
+      <td>doi</td>
+      <td>DOI</td>
+    </tr>
+    <tr>
+      <td>medline_ta</td>
+      <td>Abbreviation of the journal name</td>
+    </tr>
+    <tr>
+      <td>nlm_unique_id</td>
+      <td>NLM unique identification</td>
+    </tr>
+    <tr>
+      <td>issn_linking</td>
+      <td>ISSN linkage, typically use to link with Web of Science dataset</td>
+    </tr>
+    <tr>
+      <td>country</td>
+      <td>Country extracted from journal information field</td>
+    </tr>
+    <tr>
+      <td>mesh_terms</td>
+      <td>List of MeSH terms with corresponding MeSH ID, each separated by ';' e.g. 'D000161:Acoustic Stimulation; D000328:Adult; ...'</td>
+    </tr>
+    <tr>
+      <td>publication_types</td>
+      <td>List of publication type list each separated by ';' e.g. 'D016428:Journal Article'</td>
+    </tr>
+    <tr>
+      <td>chemical_list</td>
+      <td>List of chemical terms, each separated by ';'</td>
+    </tr>
+    <tr>
+      <td>keywords</td>
+      <td>List of keywords, each separated by ';'</td>
+    </tr>
+    <tr>
+      <td>reference</td>
+      <td>String of PMID each separated by ';' or list of references made to the article</td>
+    </tr>
+    <tr>
+      <td>delete</td>
+      <td>Boolean, 'False' means paper got updated so you might have two</td>
+    </tr>
+    <tr>
+      <td>pmc</td>
+      <td>PubMed Central ID</td>
+    </tr>
+    <tr>
+      <td>other_id</td>
+      <td>Other IDs found, each separated by ';'</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
