@@ -44,6 +44,7 @@ Create the conda environment and install the code:
     pip install .
 
 ## Demos
+You can find the code for these demos in `demo.ipynb` or in the sections below.
 
 ### Load the raw resource
 ```python
@@ -118,7 +119,7 @@ print(example['fulltext_processed'][:1000], '...') # TITLE: # SARS-CoV-2-related
 print(example['target']) # serious: 1 patientsex: 1 drugs: ACETAMINOPHEN, ASPIRIN ...
 ```
 
-## Use our fine-tuned Report-Extraction model
+### Use our fine-tuned Report-Extraction model
 ```python
 from transformers import AutoTokenizer, T5ForConditionalGeneration
 import datasets
