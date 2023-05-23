@@ -4,9 +4,7 @@
 
 # BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance.
 
-<!-- [![Code License]()]()
-[![Data License]()]() -->
-<!-- [![HuggingFace](https://huggingface.co/datasets/huggingface/badges/raw/main/powered-by-huggingface-light.svg)]() -->
+[![Code License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 This is the official repository for the [BioDEX paper](todo).
