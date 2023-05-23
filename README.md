@@ -30,12 +30,12 @@ This repository is structured as follows:
 ## Overview of this readme
 - [Installation](#installation)
 - [Demos](#demos)
-- [Train and Evaluate models](train-and-evaluate-report-extraction-models)
-- [Limitations](limitations)
-- [Contact](contact)
-- [License](license)
-- [Citation](citation)
-- [BioDEX Data Schema](biodex-data-schema)
+- [Train and Evaluate models](#train-and-evaluate-report-extraction-models)
+- [Limitations](#limitations)
+- [Contact](#contact)
+- [License](#license)
+- [Citation](#citation)
+- [BioDEX Data Schema](#biodex-data-schema)
 
 ## Installation
 Create the conda environment and install the code: 
