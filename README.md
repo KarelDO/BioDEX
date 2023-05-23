@@ -1,4 +1,12 @@
+<p align="center" width="100%">
+<a href="" target="_blank"><img src="assets/biodex_schematic.svg" alt="BioDEX-Schematic" style="width: 50%; min-width: 300px; display: block; margin: auto;"></a>
+</p>
+
 # BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance.
+
+[![Code License]()]()
+[![Data License]()]()
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
 This is the official repository for the [BioDEX paper](todo).
 
@@ -6,17 +14,13 @@ BioDEX is a raw resource for drug safety monitoring that bundles full-text and a
 
 BioDEX contains 19k full-text papers, 65k abstracts, and over 256k associated drug-safety reports.
 
-<!-- We hope that our resource paves the way for (semi-)automated ICSR reporting systems, which one day could aid humans to perform drug safety monitoring. Additionally, we believe our task is a good resource to train and evaluate the biomedical capabilities of Large Language Models. -->
-
-<!-- 
-BioDEX is created by combining the following resources:
-- [PubMed Medline](https://www.nlm.nih.gov/bsd/difference.html): Distribution of PubMed article metadata and abstracts.
-- [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/): Distribution of full-text PubMed articles.
-- [FAERS](https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers): Distribution of Individual Case Sefety Reports. -->
-
-<!-- A preliminary write-up including initial results is included in `supplementary_material/`. A description of the dataset fields is given in `supplementary_material/BioDEX_Dataset_Card.pdf`. -->
-
-
+## Overview of this repository
+This repository is structured as follows:
+- `demo.ipynb` contains some quick demonstrations of the data.
+- `analysis/` contains the data and notebooks to reproduce all plots in the paper.
+- `src/` contains all code to represent the data objects and calculate the metrics.
+- `data_creation/` contains the code to create the Report-Extraction dataset starting from the raw resource. Code to create the raw resource from scratch from will be released soon.
+- `task/icsr_extraction/` contains the code to train and evaluate models for the Report-Extraction task.
 
 ## Installation
 Create the conda environment and install the code: 
@@ -114,61 +118,134 @@ output = model.predict(**input)
 
 ``` -->
 
-## Overview of this repository
-This repository is structured as follows:
-- `analysis/` contains the data and notebooks to reproduce all plots in the paper.
-- `src/` contains all code to represent the data objects and calculate the metrics.
-- `data_creation/` contains the code to create the Report-Extraction dataset starting from the raw resource. Code to create the raw resource from scratch from will be released soon.
-- `task/icsr_extraction/` contains the code to train and evaluate models for the Report-Extraction task.
+<!-- ## TODO: evaluate a prediction -->
 
-### The Report-Extraction Task
+
+
+## Train and evaluate Report-Extraction models
 All code for this task is located in `task/icsr_extraction/`.
+Make sure to activate the `biodex` environment!
 
-Train an encoder-decoder model:
+### Fine-tune a new Report-Extraction model
+```shell
+cd tasks/icsr_extraction
+
+python run_encdec_for_icsr_extraction.py \
+    --overwrite_cache False \
+    --seed 42 \
+    --dataset_name FAERS-PubMed/BioDEX-ICSR \
+    --text_column fulltext_processed \
+    --summary_column target \
+    --model_name_or_path google/flan-t5-large \
+    --output_dir ../../checkpoints/flan-t5-large-report-extraction \
+    --max_source_length 2048 \
+    --max_target_length 256 \
+    --do_train True \
+    --do_eval True \
+    --lr_scheduler_type linear \
+    --warmup_ratio 0.0 \
+    --learning_rate 0.0001 \
+    --optim adafactor \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --eval_accumulation_steps 16 \
+    --num_train_epochs 5 \
+    --bf16 True \
+    --evaluation_strategy epoch \
+    --logging_strategy steps \
+    --save_strategy epoch \
+    --logging_steps 100 \
+    --save_total_limit 1 \
+    --report_to wandb \
+    --load_best_model_at_end True \
+    --metric_for_best_model loss \
+    --greater_is_better False \
+    --predict_with_generate True \
+    --generation_max_length 256 \
+    --num_beams 1 \
+    --repetition_penalty 1.0
 ```
-# train encoder-decoder models (e.g. T5)
-$ cd tasks/icsr_extraction
-$ python run_encdec_for_icsr_extraction.py `python ../config_to_cmd.py config_t5.yaml`
+Thus far, we only consider fine-tuning encoder-decooder models in the paper. Training a decoder-only model is still a work in progress, but we've supplied some code at `./tasks/icsr_extraction/run_decoder_for_icsr_extraction.py`
+
+### Reproduce our fine-tune evaluation run
+Using our model on Hugging Face.
+
+```shell
+cd tasks/icsr_extraction
+
+python run_encdec_for_icsr_extraction.py \
+    --overwrite_cache False \
+    --seed 42 \
+    --dataset_name FAERS-PubMed/BioDEX-ICSR \
+    --text_column fulltext_processed \
+    --summary_column target \
+    --model_name_or_path FAERS-PubMed/flan-t5-large-report-extraction \
+    --output_dir ../../checkpoints/flan-t5-large-report-extraction \
+    --max_source_length 2048 \
+    --max_target_length 256 \
+    --do_train False \
+    --do_eval True \
+    --lr_scheduler_type linear \
+    --warmup_ratio 0.0 \
+    --learning_rate 0.0001 \
+    --optim adafactor \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --eval_accumulation_steps 16 \
+    --num_train_epochs 5 \
+    --bf16 True \
+    --evaluation_strategy epoch \
+    --logging_strategy steps \
+    --save_strategy epoch \
+    --logging_steps 100 \
+    --save_total_limit 1 \
+    --report_to wandb \
+    --load_best_model_at_end True \
+    --metric_for_best_model loss \
+    --greater_is_better False \
+    --predict_with_generate True \
+    --generation_max_length 256 \
+    --num_beams 1 \
+    --repetition_penalty 1.0
 ```
 
-Train a decoder-only model (still a work in progress):
-```
-# train decoder-only models (e.g. GPT2)
-$ cd tasks/icsr_extraction
-$ python run_decoder_for_icsr_extraction.py `python ../config_to_cmd.py config_gpt2.yaml`
-```
+### Reproduce our few-shot in-context learning results
+We use the [DSP](https://github.com/stanfordnlp/dsp) framework to perform in-context learning experiments.
 
-You can either pass command line arguments directly or save them in a config and parse the config to command line by running `` `python ../config_to_cmd.py config_t5.yaml` ``. Don't forget the backticks to first execute this command. Set the `text_column` field to either `abstract` or `fulltext_processed` to train a model on only the abstract or the entire paper respectively.
+At the time of writing, DSP does not support a truncation strategy. This is vital for our task given the long inputs. To fix this and reproduce our results, you need to replace the `predict.py` file of your local dsp package (`path/to/local/dsp/primitives/predict.py`) with the adapted version located at `tasks/icsr_extraction/dsp_predict_path.py`.
 
+Run `text-davinci-003`:
+```shell
 
+cd tasks/icsr_extraction
 
-<!-- More about our evaluation procedure in the paper.
-
-Example input:
-```
-TITLE: A Case of Pancytopenia with Many Possible Causes: How Do You Tell Which is the Right One? 
-
-ABSTRACT: Systemic lupus erythematosus (SLE) often presents with cytopenia(s); however, pancytopenia is found less commonly, requiring the consideration of possible aetiologies other than the primary disease. The authors describe the case of a female patient with a recent diagnosis of SLE admitted through the Emergency Department with fever of unknown origin and severe pancytopenia. She was medicated with prednisolone, hydroxychloroquine, azathioprine, amlodipine and sildenafil. Extensive investigation suggested azathioprine-induced myelotoxicity. However, the patient was found to have a concomitant cytomegalovirus (CMV) infection, with oral lesions, positive CMV viral load as well as the previously described haematological findings. Pancytopenia is always a diagnostic challenge, with drug-induced myelotoxicity, especially secondary to azathioprine, being a rare aetiology. This report reiterates the importance of the differential diagnosis of pancytopenia, especially in immunosuppressed patients with increased risk for opportunistic infections. The possibility of multiple aetiologies for pancytopenia in the same patient should be considered.Azathioprine-induced myelotoxicity is dose-dependent and pancytopenia is a rare form of presentation.Opportunistic infections should always be considered as a cause of cytopenias when immunosuppression is present. 
-
-TEXT: INTRODUCTION Systemic lupus erythematosus (SLE) is a chronic inflammatory … [truncated]
+python run_gpt3_for_icsr_extraction.py \
+    --max_dev_samples 100 \
+    --max_tokens 128 \
+    --max_prompt_length 4096 \
+    --n_demos 7 \
+    --output_dir ../../checkpoints/ \
+    --model_name text-davinci-003 \
+    --fulltext True
 ```
 
-Example output:
+Run `gpt-4`:
+```shell
+
+cd tasks/icsr_extraction
+
+python run_gpt3_for_icsr_extraction.py \
+    --max_dev_samples 20 \
+    --max_tokens 128 \
+    --max_prompt_length 4096 \
+    --n_demos 7 \
+    --output_dir ../../checkpoints/ \
+    --model_name gpt-4 \
+    --chat_model True \
+    --fulltext True
 ```
-serious: yes 
-patientsex: female 
-drugs: AMLODIPINE BESYLATE, AZATHIOPRINE, HYDROXYCHLOROQUINE, PREDNISOLONE, SILDENAFIL 
-reactions: Bone marrow toxicity, Cytomegalovirus infection, Cytomegalovirus mucocutaneous ulcer, Febrile neutropenia, Leukoplakia, Odynophagia, Oropharyngeal candidiasis, Pancytopenia, Product use issue, Red blood cell poikilocytes present, Vitamin D deficiency
-``` -->
-
-<!-- ## Dataset Creation
-All our datasets are available on the HuggingFace hub. We are in the process of releasing all code to reproduce these datasets. 
-
-| Task            | HuggingFace dataset                                                                                                         | Leaderboard   | Code to reproduce dataset         |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------|---------------|-----------------------------------|
-| raw resource    | [FAERS-PubMed/raw_dataset](https://huggingface.co/datasets/FAERS-PubMed/raw_dataset)                                        | /             | `data_creation/raw` (coming soon) |
-| ICSR-Extraction | [FAERS-PubMed/BioDEX-ICSR](https://huggingface.co/datasets/FAERS-PubMed/BioDEX-ICSR/viewer/FAERS-PubMed--BioDEX-ICSR/train) | (coming soon) | `data_creation/icsr_extraction`   |
-| ICSR-QA         | (coming soon)                                                                                                               | (coming soon) | (coming soon)                     | -->
 
 ## Limitations
 See section 9 of the [BioDEX paper](todo) for limitations and ethical considerations.
@@ -177,7 +254,37 @@ See section 9 of the [BioDEX paper](todo) for limitations and ethical considerat
 Open an issue on this GitHub page or email `karel[dot]doosterlinck[at]ugent[dot].be` and preferrably include "[BioDEX]" in the subject.
 
 ## License
-Coming soon.
+BioDEX bundles the following resources:
+- [Medline](https://pubmed.ncbi.nlm.nih.gov): This produces all `article` fields except `fulltext` and `fulltext_license`
+- [FAERS](https://www.fda.gov/drugs/questions-and-answers-fdas-adverse-event-reporting-system-faers/fda-adverse-event-reporting-system-faers-public-dashboard): This produces all `report` fields and is covered under a CC0 license, as stated [on their website](https://open.fda.gov/data/faers/).
+- [PubMed Central Open Access Subset](https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/): This produced the `fulltext` and `fulltext_license` fields for the `article`. The PubMed Open Access Subset covers papers that are copyrighted under Creative Commens or similar liberal distributions. BioDEX features full-text papers from the commercial (CC0, CC BY, CC BY-SA, CC BY-ND) and non-commercial (CC BY-NC, CC BY-NC-SA, CC BY-NC-ND) set. This license is denoted per applicable BioDEX example in the `fulltext_license` field of the `article`. 
+
+Medline was provided by courtesy of the U.S. National Library of Medicine (NLM). This does not imply the NLM has endorsed BioDEX. The data distributed in BioDEX does not reflect the most current/accurate data available from NLM.
+
+### Create a smaller, commercially licensed BioDEX dataset
+Filter the raw resource to only include fulltext papers with a commercial license:
+
+```python
+import datasets
+
+# load the raw dataset
+dataset = datasets.load_dataset("FAERS-PubMed/raw_dataset")['train']
+print(len(dataset)) # 65,648
+
+# remove all fulltext papers with no commercial license
+commercial_licenses = {'CC0', 'CC BY', 'CC BY-SA', 'CC BY-ND'}
+
+def remove_noncom_paper(example):
+    # remove the fulltext if no commercial license, keep all the other data of the example
+    if example['article']['fulltext_license'] not in commercial_licenses:
+        example['article']['fulltext'] = None
+    return example
+
+dataset_commercial = dataset.map(remove_noncom_paper)
+print(len(dataset_commercial)) # 65,648 (no examples were dropped, only some fulltext fields were removed)
+```
+
+If you want to train a report-extraction model on this commercial dataset, repeat the steps outlined in `data_creation/icsr_extraction/icsr_extraction.ipynb` with this new `dataset_commercial` to create a new report-extraction dataset.
 
 ## Citation
 Coming soon.
