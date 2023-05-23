@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<a href="" target="_blank"><img src="assets/biodex_schematic.svg" alt="BioDEX-Schematic" style="width: 100%; min-width: 300px; display: block; margin: auto;"></a>
+<img src="assets/biodex_schematic.svg" alt="BioDEX-Schematic" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 # BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance.
