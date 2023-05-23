@@ -426,7 +426,7 @@ Coming soon.
 <br>
 
 ### Report fields
-[View in fullscreen](analysis/schemas/report_fields_table.html). (Adapted from [OpenFDA] (https://open.fda.gov/apis/openfda-fields/))
+[View in fullscreen](analysis/schemas/report_fields_table.html). (Adapted from [OpenFDA](https://open.fda.gov/apis/openfda-fields/))
 
 <div style="width: 100%; height: 300px; overflow-x: scroll;">
 <table border="1" class="dataframe">
