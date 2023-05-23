@@ -31,7 +31,7 @@ This repository is structured as follows:
 - [Train and Evaluate models](#train-and-evaluate-report-extraction-models)
 - [Limitations](#limitations)
 - [Contact](#contact)
-- [License](#license)
+- [Data License](#data-license)
 - [Citation](#citation)
 - [BioDEX Data Schema](#biodex-data-schema)
 
@@ -276,7 +276,7 @@ See section 9 of the [BioDEX paper](todo) for limitations and ethical considerat
 ## Contact
 Open an issue on this GitHub page or email `karel[dot]doosterlinck[at]ugent[dot].be` and preferrably include "[BioDEX]" in the subject.
 
-## License
+## Data License
 BioDEX bundles the following resources:
 - [Medline](https://pubmed.ncbi.nlm.nih.gov): This produces all `article` fields except `fulltext` and `fulltext_license`
 - [FAERS](https://www.fda.gov/drugs/questions-and-answers-fdas-adverse-event-reporting-system-faers/fda-adverse-event-reporting-system-faers-public-dashboard): This produces all `report` fields and is covered under a CC0 license, as stated [on their website](https://open.fda.gov/data/faers/).
