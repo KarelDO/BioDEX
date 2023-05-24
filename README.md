@@ -7,7 +7,7 @@
 [![Code License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 
-This is the official repository for the [BioDEX paper](todo).
+This is the official repository for the [BioDEX paper](https://arxiv.org/abs/2305.13395).
 
 BioDEX is a raw resource for drug safety monitoring that bundles full-text and abstract-only PubMed papers with drug safety reports. These reports contain structured information about an Adverse Drug Events (ADEs) described in the papers, and are produced by medical experts in real-world settings.
 
@@ -271,7 +271,7 @@ python run_gpt3_for_icsr_extraction.py \
 ```
 
 ## Limitations
-See section 9 of the [BioDEX paper](todo) for limitations and ethical considerations.
+See section 9 of the [BioDEX paper](https://arxiv.org/abs/2305.13395) for limitations and ethical considerations.
 
 ## Contact
 Open an issue on this GitHub page or email `karel[dot]doosterlinck[at]ugent[dot].be` and preferrably include "[BioDEX]" in the subject.
@@ -310,8 +310,16 @@ print(len(dataset_commercial)) # 65,648 (no examples were dropped, only some ful
 If you want to train a report-extraction model on this commercial dataset, repeat the steps outlined in `data_creation/icsr_extraction/icsr_extraction.ipynb` with this new `dataset_commercial` to create a new report-extraction dataset.
 
 ## Citation
-Coming soon.
-
+```
+@misc{doosterlinck2023biodex,
+      title={BioDEX: Large-Scale Biomedical Adverse Drug Event Extraction for Real-World Pharmacovigilance}, 
+      author={Karel D'Oosterlinck and François Remy and Johannes Deleu and Thomas Demeester and Chris Develder and Klim Zaporojets and Aneiss Ghodsi and Simon Ellershaw and Jack Collins and Christopher Potts},
+      year={2023},
+      eprint={2305.13395},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
 ## BioDEX data schema
 
 ### Article fields
