@@ -6,7 +6,7 @@ overwrite_cache: False
 seed: 42
 
 ############ Data and model ############
-dataset_name: FAERS-PubMed/BioDEX-ICSR
+dataset_name: BioDEX/BioDEX-ICSR
 text_column: abstract
 summary_column: target
 model_name_or_path: google/flan-t5-small

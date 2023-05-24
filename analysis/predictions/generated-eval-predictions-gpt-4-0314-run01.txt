@@ -1,0 +1,20 @@
+serious: 1 patientsex: 2 drugs: diltiazem xr, simvastatin, amitriptyline, paroxetine, st. john's wort, celecoxib, metformin, alendronate, glyburide xr, pioglitazone, hydroxyzine palmoate, chromium, cinnamon, ginkgo, glucosamine, niacin, vitamin c reactions: cognitive impairment, drug-drug interactions, polypharmacy
+serious: 1 patientsex: 1 drugs: amlodipine, lisinopril reactions: refractory vasoplegic shock, hypotension, overdose
+serious: 1 patientsex: 1 drugs: hydroxocobalamin reactions: cyanide poisoning, inhalation injury, metabolic acidosis
+serious: 1 patientsex: 1 drugs: azathioprine, ganciclovir, infliximab, mesalazine, prednisolone reactions: autoimmune hemolytic anemia, cytomegalovirus colitis, lymphoid interstitial pneumonia, respiratory failure
+serious: 1 patientsex: 2 drugs: epirubicin, bevacizumab reactions: cancer therapeutics-related cardiac dysfunction, heart failure, intracardiac thrombi
+serious: 1 patientsex: 1 drugs: ceftaroline reactions: neutropenia
+serious: 1 patientsex: 1 drugs: foscarnet, ganciclovir reactions: encephalitis, leukocytoclastic vasculitis, panuveitis, renal impairment
+serious: 1 patientsex: 1 drugs: imatinib, dasatinib, nilotinib reactions: clonal evolution, disease progression, poor prognosis
+serious: 1 patientsex: 1 drugs: panitumumab reactions: skin toxicity
+serious: 1 patientsex: 2 drugs: bevacizumab, trastuzumab, docetaxel, doxorubicin, cyclophosphamide, carboplatin reactions: congestive heart failure, cardiomyopathy, left ventricular dysfunction
+serious: 1 patientsex: 2 drugs: anastrozole, letrozole, exemestane, fulvestrant, palbociclib, everolimus, capecitabine, paclitaxel, gemcitabine reactions: bone metastases, colon metastases, gastric metastases, septic shock, multiorgan failure
+serious: 1 patientsex: 2 drugs: factor ix complex, warfarin reactions: myocardial infarction, ischemic stroke
+serious: 1 patientsex: 1 drugs: denosumab, rituximab, cyclophosphamide, doxorubicin, vincristine, prednisone reactions: hypercalcemia, splenomegaly, large b-cell lymphoma
+serious: 1 patientsex: 2 drugs: doxorubicin, mitomycin, octreotide reactions: acute systolic heart failure, carcinoid crisis, coronary vasospasm
+serious: 1 patientsex: 2 drugs: naproxen reactions: drug reaction with eosinophilia and systemic symptoms, acute liver failure, eosinophilic pneumonia
+serious: 1 patientsex: 1 drugs: sirolimus reactions: anasarca, acidosis, intraventricular hemorrhage, supratherapeutic drug levels
+serious: 1 patientsex: 1 drugs: abacavir/lamivudine, lopinavir/ritonavir, fluconazole, clindamycin reactions: acute necrotizing ulcerative gingivitis, oral pain, fever, general debilitation, disturbance of mouth opening
+serious: 1 patientsex: 2 drugs: infliximab, methotrexate reactions: cholestasis, disseminated histoplasmosis, granulomatous hepatitis
+serious: 1 patientsex: 2 drugs: fludrocortisone, furosemide, sodium bicarbonate reactions: hyperkalemia, renal impairment
+serious: 1 patientsex: 2 drugs: nitric oxide, sildenafil, bosentan, atropine, transdermal nitroglycerin reactions: persistent pulmonary hypertension of the newborn, hypertrophic pyloric stenosis
