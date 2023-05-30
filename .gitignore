@@ -1,4 +1,7 @@
 data/
+data_creation/pv_qa/pv_conv_test.json
+data_creation/pv_qa/pv_conv_train.json
+data_creation/pv_qa/pv_conv_validation.json
 
 checkpoints/
 **/.lock/
