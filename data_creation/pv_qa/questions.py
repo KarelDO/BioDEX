@@ -1,3 +1,42 @@
+# class PatientCohortQuestion(object):
+#     q = "Does the text feature a single patient that experienced adverse reactions or a cohort of patients? Return one of 'patient' or 'cohort'."
+#     t = 'PatientCohort'
+
+#     def from_report(self, report):
+#         return [self.q, None, self.t]
+
+
+class PatientWeightAndSexQuestion(object):
+    q = "This text describes an adverse drug event with regard to a patient or cohort. What is the weight of the patient? What is the sex of the patient? Produce an answer in the following format: 'The patient weights {{weight}} kg and is {{male|female}}'. If no weight or sex values can be identified, fill in 'N/A'."
+    a = "The patient weighs {weight} kg and is a {sex}."
+    t = "PatientWeightAndSex"
+
+    def from_report(self, report):
+        weight = report.patient.patientweight
+        weight = weight if weight else "N/A"
+        sex = report.patient.patientsex
+        if sex == "1":
+            sex = "male"
+        elif sex == "2":
+            sex = "female"
+        else:
+            sex = "N/A"
+
+        return [(self.q, self.a.format(weight=weight, sex=sex), self.t)]
+
+
+class ReactionsQuestion(object):
+    q = "Give an alphabetized list of all adverse reactions the patient experienced. Answer with the MedDRA preferred term. For every reaction, give the most specific reaction that is supported by the text. Answer only with a comma-separated list."
+    t = "Reactions"
+
+    def from_report(self, report):
+        reactions = [r.reactionmeddrapt for r in report.patient.reaction]
+        reactions = sorted(reactions)
+        reactions = ", ".join(reactions)
+
+        return [(self.q, reactions, self.t)]
+
+
 class WeightQuestion(object):
     q = "What is the weight of the patient?"
     a = "{patientweight} kg."
@@ -18,7 +57,7 @@ class WeightQuestion(object):
 
 class DrugsQuestion(object):
     q = "Give an alphabetized list of all active substances of drugs taken by the patient who experienced an adverse drug reaction, that could have caused this reaction. For every drug, give the most specific active substance that is supported by the text. Answer only with a comma-separated list. Do not include generic drug classes."
-    t = "DrugsGivenReaction"
+    t = "Drugs"
 
     def from_report(self, report):
         # get all activesubstances
@@ -80,7 +119,7 @@ class DrugIndicationQuestion(object):
 
 
 class DrugAdministrationRouteQuestion(object):
-    q = "What was the administration route of drug '{drug}'?"
+    q = "What was the administration route of drug '{drug}' as suggested in the text? Choose one of 'Auricular (otic)', 'Buccal', 'Cutaneous', 'Dental', 'Endocervical', 'Endosinusial', 'Endotracheal', 'Epidural', 'Extra-amniotic', 'Hemodialysis', 'Intra corpus cavernosum', 'Intra-amniotic', 'Intra-arterial', 'Intra-articular', 'Intra-uterine', 'Intracardiac', 'Intracavernous', 'Intracerebral', 'Intracervical', 'Intracisternal', 'Intracorneal', 'Intracoronary', 'Intradermal', 'Intradiscal (intraspinal)', 'Intrahepatic', 'Intralesional', 'Intralymphatic', 'Intramedullar (bone marrow)', 'Intrameningeal', 'Intramuscular', 'Intraocular', 'Intrapericardial', 'Intraperitoneal', 'Intrapleural', 'Intrasynovial', 'Intratumor', 'Intrathecal', 'Intrathoracic', 'Intratracheal', 'Intravenous bolus', 'Intravenous drip', 'Intravenous (not otherwise specified)', 'Intravesical', 'Iontophoresis', 'Nasal', 'Occlusive dressing technique', 'Ophthalmic', 'Oral', 'Oropharingeal', 'Other', 'Parenteral', 'Periarticular', 'Perineural', 'Rectal', 'Respiratory (inhalation)', 'Retrobulbar', 'Sunconjunctival', 'Subcutaneous', 'Subdermal', 'Sublingual', 'Topical', 'Transdermal', 'Transmammary', 'Transplacental', 'Unknown', 'Urethral', or 'Vaginal'."
     t = "DrugAdministrationRoute"
 
     administrationroute_map = {
@@ -172,7 +211,7 @@ class DrugAdministrationRouteQuestion(object):
 
 
 class DrugDosageQuestion(object):
-    q = "What was the dosage of drug '{drug}'?"
+    q = "What was the dosage of drug '{drug}' during treatment?"
     a = "{dosagenumb} {dosageunit}."
     t = "DrugDosage"
 
