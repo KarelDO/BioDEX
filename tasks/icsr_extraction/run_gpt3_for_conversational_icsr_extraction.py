@@ -28,7 +28,10 @@ cachedir = os.environ.get("DSP_CACHEDIR") or os.path.join(
 CacheMemory = Memory(location=cachedir, verbose=0)
 
 # Set model length
-model_to_length = {"gpt-4": 8192, "gpt-3.5-turbo": 4096}
+model_to_length = {"gpt-4": 8192, "gpt-3.5-turbo": 4096, "llama": 2048}
+
+# Define which models require the API, all other models are presumed local
+openai_models = {"gpt-4", "gpt-3.5-turbo"}
 
 # Backoff
 def backoff_hdlr(details):
@@ -46,6 +49,7 @@ def _generate_response(messages, **kwargs):
     if messages[-1]["role"] != "user":
         raise ValueError("Last message should always be a user message.")
 
+    # NOTE: replace this line with a local model
     response = openai.ChatCompletion.create(messages=messages, **kwargs)
 
     return response
