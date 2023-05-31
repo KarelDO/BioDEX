@@ -4,9 +4,11 @@ data_creation/pv_qa/pv_conv_train.json
 data_creation/pv_qa/pv_conv_validation.json
 
 checkpoints/
+checkpoints_conversational/
 **/.lock/
 **/.lock
 wandb/
+.vscode/
 **/*.out
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,7 +7,7 @@
 
 
 class PatientWeightAndSexQuestion(object):
-    q = "This text describes an adverse drug event with regard to a patient or cohort. What is the weight of the patient? What is the sex of the patient? Produce an answer in the following format: 'The patient weights {{weight}} kg and is {{male|female}}'. If no weight or sex values can be identified, fill in 'N/A'."
+    q = "This text describes an adverse drug event with regard to a patient or cohort. What is the weight of the patient? What is the sex of the patient? Produce an answer in the following format: 'The patient weights {{weight}} kg and is a {{male|female}}'. If no weight or sex values can be identified, fill in 'N/A'."
     a = "The patient weighs {weight} kg and is a {sex}."
     t = "PatientWeightAndSex"
 
