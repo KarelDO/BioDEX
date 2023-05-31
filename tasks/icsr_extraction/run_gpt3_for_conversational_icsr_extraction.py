@@ -12,6 +12,11 @@ from copy import deepcopy
 import datasets
 import glob
 from tqdm import tqdm
+from sklearn.metrics import classification_report
+
+from src.evaluate_icsr_extraction import evaluate_icsr
+from src import Icsr
+
 
 # Set up your OpenAI API credentials
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -184,7 +189,7 @@ def run(
     }
     conversations = []
     responses = []
-    for text_input, target in tqdm(zip(inputs, targets), total=len(inputs)):
+    for text_input, _ in tqdm(zip(inputs, targets), total=len(inputs)):
         system_message, user_messages = get_messages(text_input)
         conversation, respons = generate_conversation(
             system_message, user_messages, enc, **model_kwargs
@@ -193,6 +198,82 @@ def run(
         responses.append(respons)
 
     conversations_icsr = [conversation_to_icsr(c) for c in conversations]
+
+    # metrics
+    (precision, recall, f1), fails = evaluate_icsr(conversations_icsr, targets)
+    parse_percent = 100 * (1 - (fails / len(conversations_icsr)))
+
+    metrics = {
+        "predict_icsr_precision": precision,
+        "predict_icsr_recall": recall,
+        "predict_icsr_f1": f1,
+        "predict_icsr_parse_percent": parse_percent,
+    }
+
+    # experiment with per-attribute metrics
+    # TODO: work this into the ICSR code later
+    def get_set_precision_and_recalls(l1, l2):
+        s1 = set(l1)
+        s2 = set(l2)
+
+        intersect = s1.intersection(s2)
+
+        p = len(intersect) / len(s1)
+        r = len(intersect) / len(s2)
+
+        return p, r
+
+    pred_icsrs = [Icsr.from_string(pred) for pred in conversations_icsr]
+    target_icsrs = [Icsr.from_string(target) for target in targets]
+
+    drug_metrics = []
+    reaction_metrics = []
+    for pred_icsr, target_icsr in zip(pred_icsrs, target_icsrs):
+
+        drug_metrics.append(
+            get_set_precision_and_recalls(pred_icsr.drugs, target_icsr.drugs)
+        )
+        reaction_metrics.append(
+            get_set_precision_and_recalls(pred_icsr.reactions, target_icsr.reactions)
+        )
+
+    pred_patientsex = [i.patientsex for i in pred_icsrs]
+    target_patientsex = [i.patientsex for i in target_icsrs]
+    pred_serious = [i.serious for i in pred_icsrs]
+    target_serious = [i.serious for i in target_icsrs]
+
+    patientsex_report = classification_report(
+        target_patientsex, pred_patientsex, output_dict=True
+    )
+    patientsex_precision = patientsex_report["weighted avg"]["precision"]
+    patientsex_recall = patientsex_report["weighted avg"]["recall"]
+    serious_report = classification_report(
+        target_serious, pred_serious, output_dict=True
+    )
+    serious_precision = serious_report["weighted avg"]["precision"]
+    serious_recall = serious_report["weighted avg"]["recall"]
+
+    drug_precision = sum([m[0] for m in drug_metrics]) / len(targets)
+    drug_recall = sum([m[1] for m in drug_metrics]) / len(targets)
+    reaction_precision = sum([m[0] for m in reaction_metrics]) / len(targets)
+    reaction_recall = sum([m[1] for m in reaction_metrics]) / len(targets)
+
+    metrics.update(
+        {
+            "predict_drug_precision": drug_precision,
+            "predict_drug_recall": drug_recall,
+            "predict_reaction_precision": reaction_precision,
+            "predict_reaction_recall": reaction_recall,
+            "predict_patientsex_precision": patientsex_precision,
+            "predict_patientsex_recall": patientsex_recall,
+            "predict_serious_precision": serious_precision,
+            "predict_serious_recall": serious_recall,
+        }
+    )
+
+    print("Results:")
+    for k, v in metrics.items():
+        print("{:<30} {:<15}".format(k, v))
 
     # Get ouput dir
     output_dir = os.path.join(output_dir, model_name)
@@ -215,6 +296,10 @@ def run(
         for target in targets:
             target = target.replace("\n", " ").strip()
             fp.write(target + "\n")
+
+    # Save metrics
+    with open(os.path.join(output_dir, "eval_results.json"), "w") as fp:
+        json.dump(metrics, fp, indent=4)
 
 
 if __name__ == "__main__":
