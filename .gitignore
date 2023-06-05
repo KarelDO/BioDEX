@@ -1,5 +1,7 @@
 data/
-
+data_creation/pv_qa/*.jsonl
+checkpoints_conversational/
+.vscode/
 checkpoints/
 **/.lock/
 **/.lock
