@@ -12,7 +12,7 @@ import tiktoken
 from src.evaluate_icsr_extraction import evaluate_icsr
 
 
-def load_data(max_dev_samples: int, fulltext: bool) -> tuple:
+def load_data(validation_split: str, max_dev_samples: int, fulltext: bool) -> tuple:
     dataset = datasets.load_dataset("BioDEX/BioDEX-ICSR")
 
     question = "What adverse drug event was described in the following context?"
@@ -32,7 +32,7 @@ def load_data(max_dev_samples: int, fulltext: bool) -> tuple:
             ),
             answer=process_text(example["target"]),
         )
-        for example in dataset["validation"]
+        for example in dataset[validation_split]
     ]
     if max_dev_samples:
         dev = dev[:max_dev_samples]
@@ -94,6 +94,7 @@ def run(
     max_tokens: int,
     max_prompt_length: int,
     n_demos: int,
+    validation_split: str,
     max_dev_samples: int,
     output_dir: str,
     model_name: str,
@@ -102,7 +103,7 @@ def run(
     dontsave: bool,
 ):
     # Load data
-    train, dev = load_data(max_dev_samples, fulltext)
+    train, dev = load_data(validation_split, max_dev_samples, fulltext)
 
     # Configure language model
     os.environ["DSP_NOTEBOOK_CACHEDIR"] = os.path.join(output_dir, "cache")
@@ -231,23 +232,27 @@ def run(
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    with open(os.path.join(output_dir, "generated_eval_predictions.txt"), "w") as f:
+    with open(
+        os.path.join(output_dir, f"generated_{validation_split}_predictions.txt"), "w"
+    ) as f:
         for pred in predictions:
             f.write(pred + "\n")
 
-    with open(os.path.join(output_dir, "eval_labels.txt"), "w") as fp:
+    with open(os.path.join(output_dir, f"{validation_split}_labels.txt"), "w") as fp:
         fp.writelines("\n".join(labels))
 
     prompt_dict = {i: p for i, p in enumerate(prompts)}
-    with open(os.path.join(output_dir, "eval_prompts.json"), "w") as fp:
+    with open(os.path.join(output_dir, f"{validation_split}_prompts.json"), "w") as fp:
         json.dump(prompt_dict, fp, indent=4)
 
     # Save config
-    with open(os.path.join(output_dir, "lm_config.json"), "w") as fp:
+    with open(
+        os.path.join(output_dir, f"lm_{validation_split}_config.json"), "w"
+    ) as fp:
         json.dump(lm.kwargs, fp, indent=4)
 
     # Save metrics
-    with open(os.path.join(output_dir, "eval_results.json"), "w") as fp:
+    with open(os.path.join(output_dir, f"{validation_split}_results.json"), "w") as fp:
         json.dump(metrics, fp, indent=4)
 
 
@@ -272,10 +277,17 @@ if __name__ == "__main__":
         help="The number of demonstrative examples to use in question answering.",
     )
     parser.add_argument(
+        "--validation_split",
+        type=str,
+        choices=["validation", "test"],
+        default="validation",
+        help="The split to use for validation.",
+    )
+    parser.add_argument(
         "--max_dev_samples",
         type=int,
         default=None,
-        help="The maximum number of samples to use from the developmen`t set.",
+        help="The maximum number of samples to use from the set used for validation.",
     )
     parser.add_argument(
         "--output_dir",
@@ -316,6 +328,7 @@ if __name__ == "__main__":
         max_tokens=args.max_tokens,
         max_prompt_length=args.max_prompt_length,
         n_demos=args.n_demos,
+        validation_split=args.validation_split,
         max_dev_samples=args.max_dev_samples,
         output_dir=args.output_dir,
         model_name=args.model_name,

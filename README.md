@@ -234,6 +234,8 @@ python run_encdec_for_icsr_extraction.py \
     --repetition_penalty 1.0
 ```
 
+Add `--do_predict True` to get the results on the test set.
+
 ### Reproduce our few-shot in-context learning results
 We use the [DSP](https://github.com/stanfordnlp/dsp) framework to perform in-context learning experiments.
 
@@ -269,6 +271,8 @@ python run_gpt3_for_icsr_extraction.py \
     --chat_model True \
     --fulltext True
 ```
+
+Add `--validation_split test` to get the results on the test set.
 
 ## Limitations
 See section 9 of the [BioDEX paper](https://arxiv.org/abs/2305.13395) for limitations and ethical considerations.
