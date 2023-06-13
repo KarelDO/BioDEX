@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List
 
 from .report import Report
@@ -29,6 +29,10 @@ class Icsr(BaseModel):
     drugs: List[str]
     reactions: List[str]
 
+    @validator("drugs", "reactions")
+    def convert_to_lowercase(cls, value):
+        return [item.lower() for item in value]
+
     def score(self, gold):
         serious_sim = self.serious == gold.serious
         patientsex_sim = self.patientsex == gold.patientsex
@@ -50,6 +54,14 @@ class Icsr(BaseModel):
         else:
             f1 = 0.0
         return precision, recall, f1
+
+    def score_detangled(self, gold):
+        patientsex_accuracy = int(self.patientsex == gold.patientsex)
+        serious_accuracy = int(self.serious == gold.serious)
+        drug_metrics = get_set_precision_and_recalls(self.drugs, gold.drugs)
+        reaction_metrics = get_set_precision_and_recalls(self.reactions, gold.reactions)
+
+        return patientsex_accuracy, serious_accuracy, drug_metrics, reaction_metrics
 
     def __hash__(self):
         return hash((self.serious, self.patientsex, self.drugs, self.reactions))
