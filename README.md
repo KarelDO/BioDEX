@@ -262,7 +262,7 @@ Run `gpt-4`:
 cd tasks/icsr_extraction
 
 python run_gpt3_for_icsr_extraction.py \
-    --max_dev_samples 20 \
+    --max_dev_samples 100 \
     --max_tokens 128 \
     --max_prompt_length 4096 \
     --n_demos 7 \
