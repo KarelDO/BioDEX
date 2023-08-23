@@ -1,0 +1,100 @@
+serious: 1 patientsex: 2 drugs: diltiazem xr, simvastatin, amitriptyline, paroxetine, st. john's wort, celecoxib, metformin, alendronate, glyburide xr, pioglitazone, hydroxyzine palmoate, chromium, cinnamon, ginkgo, glucosamine, niacin, vitamin c reactions: cognitive impairment, drug-drug interactions, polypharmacy
+serious: 1 patientsex: 1 drugs: amlodipine, lisinopril reactions: refractory vasoplegic shock, hypotension, overdose
+serious: 1 patientsex: 1 drugs: hydroxocobalamin reactions: cyanide poisoning, inhalation injury, metabolic acidosis
+serious: 1 patientsex: 1 drugs: azathioprine, ganciclovir, infliximab, mesalazine, prednisolone reactions: autoimmune hemolytic anemia, cytomegalovirus colitis, lymphoid interstitial pneumonia, respiratory failure
+serious: 1 patientsex: 2 drugs: epirubicin, bevacizumab reactions: cancer therapeutics-related cardiac dysfunction, heart failure, intracardiac thrombi
+serious: 1 patientsex: 1 drugs: ceftaroline reactions: neutropenia
+serious: 1 patientsex: 1 drugs: foscarnet, ganciclovir reactions: encephalitis, leukocytoclastic vasculitis, panuveitis, renal impairment
+serious: 1 patientsex: 1 drugs: imatinib, dasatinib, nilotinib reactions: clonal evolution, disease progression, poor prognosis
+serious: 1 patientsex: 1 drugs: panitumumab reactions: skin toxicity
+serious: 1 patientsex: 2 drugs: bevacizumab, trastuzumab, docetaxel, doxorubicin, cyclophosphamide, carboplatin reactions: congestive heart failure, cardiomyopathy, left ventricular dysfunction
+serious: 1 patientsex: 2 drugs: anastrozole, letrozole, exemestane, fulvestrant, palbociclib, everolimus, capecitabine, paclitaxel, gemcitabine reactions: bone metastases, colon metastases, gastric metastases, septic shock, multiorgan failure
+serious: 1 patientsex: 2 drugs: factor ix complex, warfarin reactions: myocardial infarction, ischemic stroke
+serious: 1 patientsex: 1 drugs: denosumab, rituximab, cyclophosphamide, doxorubicin, vincristine, prednisone reactions: hypercalcemia, splenomegaly, large b-cell lymphoma
+serious: 1 patientsex: 2 drugs: doxorubicin, mitomycin, octreotide reactions: acute systolic heart failure, carcinoid crisis, coronary vasospasm
+serious: 1 patientsex: 2 drugs: naproxen reactions: drug reaction with eosinophilia and systemic symptoms, acute liver failure, eosinophilic pneumonia
+serious: 1 patientsex: 1 drugs: sirolimus reactions: anasarca, acidosis, intraventricular hemorrhage, supratherapeutic drug levels
+serious: 1 patientsex: 1 drugs: abacavir/lamivudine, lopinavir/ritonavir, fluconazole, clindamycin reactions: acute necrotizing ulcerative gingivitis, oral pain, fever, general debilitation, disturbance of mouth opening
+serious: 1 patientsex: 2 drugs: infliximab, methotrexate reactions: cholestasis, disseminated histoplasmosis, granulomatous hepatitis
+serious: 1 patientsex: 2 drugs: fludrocortisone, furosemide, sodium bicarbonate reactions: hyperkalemia, renal impairment
+serious: 1 patientsex: 2 drugs: nitric oxide, sildenafil, bosentan, atropine, transdermal nitroglycerin reactions: persistent pulmonary hypertension of the newborn, hypertrophic pyloric stenosis
+serious: 1 patientsex: 2 drugs: valproic acid, levocarnitine reactions: coma, respiratory depression, pancytopenia, hemodynamic instability, hypophosphatemia, thrombocytopenia
+serious: 1 patientsex: 1 drugs: methylprednisolone, bupivacaine, epinephrine reactions: hypokalemic paralysis
+serious: 1 patientsex: 2 drugs: levetiracetam, hemin reactions: non-convulsive status epilepticus, acute porphyria crisis
+serious: 1 patientsex: 1 drugs: corticosteroid, prednisolone reactions: disseminated histoplasmosis, pancytopenia
+serious: 1 patientsex: 2 drugs: methimazole, levothyroxine reactions: fetal gastroschisis, restricted fetal growth, septic shock
+serious: 1 patientsex: 2 drugs: vonoprazan, lansoprazole reactions: gastrointestinal bleeding, peptic ulcer recurrence
+serious: 1 patientsex: 2 drugs: bevacizumab, ranibizumab reactions: retinal pigment epithelial atrophy
+serious: 1 patientsex: 2 drugs: lithium reactions: hypercalcemia, hyperparathyroidism
+serious: 1 patientsex: 2 drugs: doxorubicin, cyclophosphamide reactions: treatment-related acute promyelocytic leukemia
+serious: 1 patientsex: 2 drugs: rituximab, anakinra, tocilizumab, abatacept, tofacitinib reactions: pneumonia, septic shock
+serious: 1 patientsex: 2 drugs: dextrose infusion reactions: endogenous endophthalmitis, fungal infection, posterior hypopyon
+serious: 1 patientsex: 1 drugs: levetiracetam, sodium valproate, clonazepam reactions: seizure, myoclonus, bilateral limb weakness, unconsciousness
+serious: 1 patientsex: 1 drugs: edoxaban, levofloxacin, piperacillin-tazobactam reactions: haematuria, respiratory failure, severe hypotension, takotsubo syndrome
+serious: 1 patientsex: 1 drugs: piperacillin/tazobactam, brentuximab vedotin, bendamustine reactions: pancytopenia
+serious: 1 patientsex: 2 drugs: omeprazole, lansoprazole, pantoprazole, rabeprazole, esomeprazole reactions: hypersensitive reactions, urticaria, angioedema, anaphylaxis
+serious: 1 patientsex: 1 drugs: everolimus, tacrolimus, mycophenolate, prednisone, piperacillin/tazobactam, ceftriaxone, meropenem, levofloxacin, linezolid, cotrimoxazole, sevelamer carbonate, cinacalcet, paricalcitol, phenprocoumon, rivaroxaban, vitamin k reactions: calciphylaxis, edema, gangrenous ulcerations, infection
+serious: 1 patientsex: 2 drugs: sunitinib, s-1, cisplatin reactions: neutropenic infection, thrombocytopenia, s-1 dose interruption
+serious: 1 patientsex: 2 drugs: crizotinib reactions: esophagitis, odynophagia
+serious: 1 patientsex: 1 drugs: valproic acid, lamotrigine, levetiracetam reactions: hyperbilirubinemia, liver function test abnormal
+serious: 1 patientsex: 1 drugs: growth hormone, anabolic steroids, testosterone reactions: hypercalcaemia, myositis, rhabdomyolysis, severe constipation
+serious: 1 patientsex: 2 drugs: lisinopril reactions: syndrome of inappropriate antidiuretic hormone secretion, hyponatremia
+serious: 1 patientsex: 1 drugs: infliximab, adalimumab reactions: tuberculosis
+serious: 1 patientsex: 2 drugs: secukinumab, ustekinumab reactions: plaque psoriasis
+serious: 1 patientsex: 1 drugs: recombinant human growth hormone reactions: pseudotumor cerebri
+serious: 1 patientsex: 2 drugs: dabigatran reactions: acute kidney injury, anticoagulant nephropathy, hematuria, oliguria
+serious: 1 patientsex: 2 drugs: extended-release pramipexole reactions: auditory musical hallucinations, visual hallucinations
+serious: 1 patientsex: 1 drugs: tacrolimus, everolimus reactions: mucocutaneous tuberculosis
+serious: 1 patientsex: 2 drugs: quetiapine reactions: global aphasia
+serious: 1 patientsex: 1 drugs: metformin reactions: hypoglycemia, lactic acidosis
+serious: 1 patientsex: 1 drugs: pasireotide reactions: hypercortisolism, tumor volume reduction
+serious: 1 patientsex: 1 drugs: ampicillin, erythromycin, azithromycin, gentamycin, penicillin reactions: early-onset neonatal sepsis, ampicillin-resistant e. coli infection
+serious: 1 patientsex: 1 drugs: bupivacaine, ropivacaine reactions: spinal paralysis, cardiovascular collapse
+serious: 1 patientsex: 2 drugs: anthracyclines, sacubitril/valsartan reactions: dilated cardiomyopathy, cardiac decompensation
+serious: 1 patientsex: 2 drugs: methylene blue, duloxetine, fentanyl reactions: serotonin syndrome
+serious: 1 patientsex: 1 drugs: docetaxel, cisplatin, fluorouracil, carboplatin, paclitaxel, cetuximab reactions: myelotoxicity, nausea
+serious: 1 patientsex: 1 drugs: tumor necrosis factor inhibitors reactions: active tuberculosis
+serious: 1 patientsex: 1 drugs: cefuroxime, ciprofloxacin, gentamicin reactions: fever, hematuria, subcapsular hematoma, urosepsis
+serious: 1 patientsex: 1 drugs: lithium, lorazepam, ziprasidone, asenapine, amantadine, armodafinil, methylphenidate, lamotrigine reactions: catatonia, extrapyramidal symptoms, nausea, stiffness, tremors, bradykinesia, anxiety
+serious: 1 patientsex: 2 drugs: erlotinib, carboplatin, gemcitabine, cisplatin, docetaxel reactions: vomiting, obstipation, ileus
+serious: 1 patientsex: 1 drugs: chlorpromazine reactions: neuroleptic malignant syndrome, tachycardia, hyperpyrexia, altered consciousness, autonomic instability, elevated serum creatine kinase
+serious: 1 patientsex: 1 drugs: itraconazole, deoxycholate amphotericin b, cyclosporine, azathioprine, prednisone, tacrolimus, mycophenolate mofetil reactions: cutaneous sporotrichosis, meningeal sporotrichosis
+serious: 1 patientsex: 2 drugs: pembrolizumab reactions: pneumonitis, dyspnea, lymphocytosis
+serious: 1 patientsex: 2 drugs: dexamethasone reactions: motor weakness, spinal cord compression, cerebrospinal fluid collection
+serious: 1 patientsex: 2 drugs: azathioprine, hydroxychloroquine, prednisone, piperacillin-tazobactam, ceftriaxone, trimethoprim-sulfamethoxazole reactions: aortic aneurysm, infectious aortitis, salmonella infection
+serious: 1 patientsex: 1 drugs: voriconazole, amphotericin b, isavuconazole, blinatumomab reactions: fungemia, hallucinations, skin lesions
+serious: 1 patientsex: 1 drugs: mogamulizumab reactions: graft-vs-host disease, spongiotic dermatitis
+serious: 1 patientsex: 2 drugs: dapsone reactions: methemoglobinemia
+serious: 1 patientsex: 2 drugs: warfarin reactions: warfarin-induced skin necrosis, thrombotic pulmonary embolism
+serious: 1 patientsex: 1 drugs: piperacillin/tazobactam reactions: pancytopenia
+serious: 1 patientsex: 1 drugs: valproate, levetiracetam, topiramate, phenobarbital, dexamethasone, clonazepam reactions: liver function test abnormal, hypohidrosis, seizure
+serious: 1 patientsex: 2 drugs: tacrolimus, haloperidol, chlorpromazine, risperidone reactions: pancytopenia, graft versus host disease, cognitive dysfunction, extrapyramidal symptoms
+serious: 1 patientsex: 1 drugs: docetaxel reactions: radiation recall dermatitis
+serious: 1 patientsex: 1 drugs: 5-fluorouracil, irinotecan, leucovorin, oxaliplatin reactions: organizing pneumonia
+serious: 1 patientsex: 2 drugs: dexmedetomidine, morphine, hydrocodone, aminophenol hydrocodone, oxycodone, bozitinib, fluvoxamine maleate reactions: refractory cancer pain, pain-related depression
+serious: 1 patientsex: 1 drugs: vancomycin reactions: aortic root abscess, aorta to right atrium fistula, vancomycin-intermediate staphylococcus aureus infection
+serious: 1 patientsex: 1 drugs: infliximab, methotrexate, methylprednisolone, liposomal amphotericin b reactions: leishmaniasis, pancytopenia
+serious: 1 patientsex: 1 drugs: cotrimoxazole, itraconazole, interferon-γ, ciprofloxacin, doxycycline, ceftriaxone, amoxicillin/clavulanic acid, meropenem, amikacin, teicoplanin, voriconazole, intravenous immunoglobulin, dexamethasone, linezolid, caspofungin, liposomal amphotericin b, isoniazid, clarithromycin, rifampin reactions: meningitis, pneumonia, pleural effusion, splen
+serious: 1 patientsex: 2 drugs: palbociclib, letrozole, docetaxel, vancomycin, piperacillin-tazobactam, levofloxacin, penicillin, clindamycin reactions: myonecrosis, septic shock, multiorgan failure
+serious: 1 patientsex: 2 drugs: oxcarbazepine, olanzapine reactions: hyponatremia, somnolence
+serious: 1 patientsex: 1 drugs: sorafenib reactions: hematochezia, anemia, diarrhea, gastrointestinal bleeding
+serious: 1 patientsex: 2 drugs: corticosteroids, piperacillin tazobactam, ampicillin, meropenem, tmp-smx reactions: endogenous endophthalmitis, disseminated nocardiosis, panuveitis, vitreal haze
+serious: 1 patientsex: 2 drugs: ertapenem, rituximab, ciprofloxacin, clindamycin, prednisone, sulfasalazine, hydroxychloroquine reactions: recurrent salmonella infection, gastrointestinal infection, fever, diarrhea
+serious: 1 patientsex: 2 drugs: sirolimus reactions: small bowel angioedema
+serious: 1 patientsex: 2 drugs: eculizumab, plasma exchange, hemodialysis reactions: atypical hemolytic uremic syndrome, acute kidney injury, thrombocytopenia, hemolytic anemia
+serious: 1 patientsex: 1 drugs: clopidogrel reactions: hyperinsulinemic hypoglycemia, insulin autoimmune syndrome
+serious: 1 patientsex: 2 drugs: rituximab, cyclophosphamide, doxorubicin, vincristine, prednisolone reactions: syndrome of inappropriate antidiuretic hormone secretion, hyponatremia
+serious: 1 patientsex: 1 drugs: liposomal amphotericin b, methyl prednisolone, mycophenolate mofetil, tacrolimus reactions: bronchiolitis obliterans organizing pneumonia, disseminated mucormycosis, portal vein thrombosis, pneumocystis jiroveci infection
+serious: 1 patientsex: 1 drugs: cefozopran, meropenem, vancomycin, levofloxacin, cytosine arabinoside, idarubicin hydrochloride, amikacin, trimethoprim-sulfamethoxazole, ceftazidime, minocycline reactions: febrile neutropenia, pneumonia, sepsis, respiratory failure
+serious: 1 patientsex: 1 drugs: cisplatin, vinblastine, bleomycin, adriamycin, ifosfamide, etoposide reactions: myelosuppression, nephrotoxicity, polyneuropathy, paralytic subileus, bleomycin-induced pneumonitis
+serious: 1 patientsex: 2 drugs: mycophenolic acid, prednisone reactions: post-transplant lymphoproliferative disease, sinus arrest, seizure-like activity
+serious: 1 patientsex: 2 drugs: chlorpromazine, haloperidol, propofol, fentanyl, rocuronium, sevoflurane reactions: postoperative delirium
+serious: 1 patientsex: 2 drugs: ranibizumab reactions: vitreous hemorrhage
+serious: 1 patientsex: 2 drugs: ertapenem sodium, cephalexin reactions: graft infection, pseudoaneurysm
+serious: 1 patientsex: 1 drugs: rituximab, cyclophosphamide, adriamycin, vincristine, prednisolone, cisplatin, cytosine arabinoside, dexamethasone, etoposide, carboplatin, ifosfamide reactions: cutaneous relapse, foot drop, axonal polyneuropathy, active myopathy
+serious: 1 patientsex: 2 drugs: letrozole, clomiphene citrate reactions: peripheral anti-oestrogenic actions on endometrial development and cervical mucus
+serious: 1 patientsex: 2 drugs: mesalazine suppository reactions: eosinophilic pneumonia, bronchiolitis obliterans with organizing pneumonia
+serious: 1 patientsex: 2 drugs: tamoxifen reactions: endometrial polyp, leiomyoma with osteoclastic like giant cells
+serious: 1 patientsex: 1 drugs: metformin, sitagliptin reactions: megaloblastic anemia, vitamin b12 deficiency
+serious: 1 patientsex: 1 drugs: s-1, cisplatin, mfolfox6, fluorouracil, oxaliplatin, leucovorin, bevacizumab reactions: metastasis, peritoneal metastases, lung metastasis, bone metastasis
+serious: 1 patientsex: 2 drugs: ustekinumab reactions: off label use
