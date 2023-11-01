@@ -153,11 +153,7 @@ class ModelArguments:
     )
     do_sample: Optional[bool] = field(
         default=False,
-        metadata={
-            "help": (
-                "Use sampling in model.generate."
-            )
-        },
+        metadata={"help": ("Use sampling in model.generate.")},
     )
 
 
@@ -326,7 +322,6 @@ class DataTrainingArguments:
             )
         },
     )
-
 
     def __post_init__(self):
         if (
@@ -840,7 +835,7 @@ def main():
         # "force_words_ids": force_words_ids
         # if training_args.generation_num_beams > 1
         # else None,
-        "do_sample":model_args.do_sample,
+        "do_sample": model_args.do_sample,
         "temperature": 1.0,
         "force_words_ids": None,
         "repetition_penalty": model_args.repetition_penalty,
