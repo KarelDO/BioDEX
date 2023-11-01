@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     # Download Hugging Face dataset and get the gold targets
     (precision, recall, f1), failed = evaluate_icsr_from_dataset(
-        pred_strings, args.dataset_name, args.dataset_split, False
+        pred_strings, args.dataset_name, args.dataset_split, detangled=False
     )
 
     print(f"Evaluate: precision: {precision}")
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             avg_reaction_precision,
             avg_reaction_recall,
         ) = evaluate_icsr_from_dataset(
-            pred_strings, args.dataset_name, args.dataset_split, True
+            pred_strings, args.dataset_name, args.dataset_split, detangled=True
         )
 
         print(f"Evaluate: avg_patientsex_accuracy: {avg_patientsex_accuracy}")

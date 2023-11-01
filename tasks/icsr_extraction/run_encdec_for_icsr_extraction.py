@@ -151,6 +151,14 @@ class ModelArguments:
         default=1.0,
         metadata={"help": {"Repetition penalty to use during beam search decoding."}},
     )
+    do_sample: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": (
+                "Use sampling in model.generate."
+            )
+        },
+    )
 
 
 @dataclass
@@ -318,6 +326,7 @@ class DataTrainingArguments:
             )
         },
     )
+
 
     def __post_init__(self):
         if (
@@ -831,6 +840,8 @@ def main():
         # "force_words_ids": force_words_ids
         # if training_args.generation_num_beams > 1
         # else None,
+        "do_sample":model_args.do_sample,
+        "temperature": 1.0,
         "force_words_ids": None,
         "repetition_penalty": model_args.repetition_penalty,
     }
@@ -909,7 +920,7 @@ def main():
 
         # custom icsr metric
         (precision, recall, f1), fails = evaluate_icsr_from_dataset(
-            predictions, data_args.dataset_name, "validation"
+            predictions, data_args.dataset_name, "validation", detangled=False
         )
         parse_percent = 100 * (1 - (fails / len(predictions)))
         metrics.update(
@@ -958,7 +969,7 @@ def main():
 
         # custom icsr metric
         (precision, recall, f1), fails = evaluate_icsr_from_dataset(
-            predictions, data_args.dataset_name, "test"
+            predictions, data_args.dataset_name, "test", detangled=False
         )
         parse_percent = 100 * (1 - (fails / len(predictions)))
         metrics.update(
