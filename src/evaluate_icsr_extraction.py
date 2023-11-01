@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def evaluate_icsr_from_dataset(pred_strings, dataset_name, dataset_split, detangled):
+def evaluate_icsr_from_dataset(pred_strings, dataset_name, dataset_split, detangled=False):
     dataset = load_dataset(dataset_name)
     gold_strings = dataset[dataset_split]["target"]
 
