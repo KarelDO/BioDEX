@@ -13,7 +13,7 @@ BioDEX is a raw resource for drug safety monitoring that bundles full-text and a
 
 BioDEX contains 19k full-text papers, 65k abstracts, and over 256k associated drug-safety reports.
 
-Our data and models are available on [Hugging Face](https://huggingface.co/BioDEX).
+Our data and models are available on [Hugging Face](https://huggingface.co/BioDEX). If you're interested in full drug-reports, use [BioDEX-ICSR](https://huggingface.co/datasets/BioDEX/BioDEX-ICSR). If you're here to only extract reactions (as in [In-Context Learning for Extreme Multi-Label Classification](https://arxiv.org/pdf/2401.12178.pdf)), use [BioDEX-Reactions](https://huggingface.co/datasets/BioDEX/BioDEX-Reactions).
 
 
 
